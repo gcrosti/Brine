@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_navigation"
+    app:startDestination="@id/recipeListFragment">
+
+    <fragment
+        android:id="@+id/recipeListFragment"
+        android:name="com.gdc.recipebook.MealListFragment"
+        android:label="fragment_recipe_list"
+        tools:layout="@layout/fragment_meal_list" >
+        <action
+            android:id="@+id/action_recipeListFragment_to_recipeFragment"
+            app:destination="@id/recipeFragment" />
+        <action
+            android:id="@+id/action_recipeListFragment_to_recipeEditorFragment"
+            app:destination="@id/recipeEditorFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/recipeFragment"
+        android:name="com.gdc.recipebook.MealFragment"
+        android:label="RecipeFragment" >
+        <argument
+            android:name="mealName"
+            app:argType="string"
+            android:defaultValue="null"/>
+        <action
+            android:id="@+id/action_recipeFragment_to_recipeListFragment"
+            app:destination="@id/recipeListFragment" />
+        <action
+            android:id="@+id/action_recipeFragment_to_recipeEditorFragment"
+            app:destination="@id/recipeEditorFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/recipeEditorFragment"
+        android:name="com.gdc.recipebook.MealEditorFragment"
+        android:label="RecipeEditorFragment" >
+        <argument
+            android:name="mealName"
+            app:argType="string"
+            android:defaultValue="null"/>
+        <action
+            android:id="@+id/action_recipeEditorFragment_to_recipeFragment"
+            app:destination="@id/recipeFragment" />
+        <action
+            android:id="@+id/action_recipeEditorFragment_to_recipeListFragment"
+            app:destination="@id/recipeListFragment" />
+    </fragment>
+</navigation>

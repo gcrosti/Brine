@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">Brine</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="mealName">Meal Name</string>
+    <string name="mealFunction">Meal Function</string>
+    <string name="mealTitle">Meal Title</string>
+    <string name="mealResources">What resources (URLs, books) did you use to make this meal?</string>
+    <string name="functionTitleNewMeal">Meal Function</string>
+    <string name="newMealNameHint">Meal Name</string>
+    <string name="createMeal">Create Meal</string>
+    <string name="saveMeal">Save Meal</string>
+    <string name="Protein">Protein</string>
+    <string name="Vegetable">Vegetable</string>
+    <string name="Starch">Starch</string>
+    <string name="Ingredient">Ingredient</string>
+    <string name="Dip">Dip</string>
+    <string name="Dressing">Dressing</string>
+    <string name="Beverage">Beverage</string>
+    <string name="Dessert">Dessert</string>
+    <string name="deleteMeal">Delete Meal</string>
+    <string name="welcomeMessage">Welcome! Brine is a ledger of your favorite food creations.</string>
+    <string name="saveFirstMeal">Save Your First Meal</string>
+</resources>

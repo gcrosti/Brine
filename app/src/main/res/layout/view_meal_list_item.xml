@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:layout_gravity="center_horizontal"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+        <TextView
+            android:id="@+id/recipeName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mealName"
+            android:textSize="@dimen/fragmentTitleTextSize" />
+
+    <TextView
+        android:id="@+id/recipeFunction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/mealFunction"
+        android:textStyle="bold" />
+    </LinearLayout>
