@@ -1,3 +1,9 @@
 package com.gdc.recipebook
 
-class Meal (var name: String, var function: String = "", var notes: String = "")
+import com.google.firebase.iid.FirebaseInstanceId
+
+class Meal (
+    var name: String,
+    val instanceId: String = FirebaseInstanceId.getInstance().id,
+    var function: String = "",
+    var notes: String = "")

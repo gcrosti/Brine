@@ -3,6 +3,8 @@ package com.gdc.recipebook
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
@@ -10,6 +12,7 @@ class ListDataManager(context: Context) {
     private val PREF_NAME = "list"
     private var prefs: SharedPreferences = context.getSharedPreferences(PREF_NAME,0)
     private val gson = Gson()
+    private val authString = context.getString(R.string.liveDataAuth)
 
     fun saveList(list: MutableList<Meal> ) {
         val sharedPrefsEditor = prefs.edit()
@@ -53,6 +56,11 @@ class ListDataManager(context: Context) {
     fun deleteMeal(mealList: MutableList<Meal>, name:String) {
         val meal  = mealList.filter { it.name == name}[0]
         mealList.remove(meal)
+    }
+
+    fun saveNewMealToDatabase(meal: Meal) {
+        val database = Firebase.database.getReference(authString)
+        database.child(meal.instanceId).child("meals").child(meal.name).setValue(meal)
     }
 
     fun clearSharedPrefs() {

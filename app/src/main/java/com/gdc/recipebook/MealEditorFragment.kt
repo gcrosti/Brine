@@ -48,6 +48,7 @@ class MealEditorFragment: Fragment() {
             setFunction(newMeal)
             listDataManager.editMeal(mealList,oldMeal.name,newMeal)
             listDataManager.saveList(mealList)
+            listDataManager.saveNewMealToDatabase(newMeal)
             navToMeal(newMeal.name)
 
         }

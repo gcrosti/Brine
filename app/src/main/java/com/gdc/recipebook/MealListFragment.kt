@@ -2,6 +2,7 @@ package com.gdc.recipebook
 
 import android.app.Dialog
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,9 +10,12 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.fragment_meal_list.*
-import kotlinx.android.synthetic.main.view_newmeal_dialog.*
 import kotlinx.android.synthetic.main.view_meal_list_item.view.*
+import kotlinx.android.synthetic.main.view_newmeal_dialog.*
 import kotlinx.android.synthetic.main.view_welcome.*
 import java.util.*
 
@@ -123,6 +127,7 @@ class MealListFragment : Fragment() {
                     mealList.add(newMeal)
                     listDataManager.saveList(mealList)
                     navToEditor(editText)
+                    listDataManager.saveNewMealToDatabase(newMeal)
                     dialog.dismiss()
                 }
 

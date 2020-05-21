@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "72189927673",
+    "firebase_url": "https://brine-599f1.firebaseio.com",
+    "project_id": "brine-599f1",
+    "storage_bucket": "brine-599f1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:72189927673:android:9f46f14394e8563e778228",
+        "android_client_info": {
+          "package_name": "com.gdc.recipebook"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "72189927673-dfuq9rrp5uge7cu8jef9bmbn18ju0jjv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCx2t8xfGwFpP-2pRjoNxMFQBpnzbvqLxo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "72189927673-dfuq9rrp5uge7cu8jef9bmbn18ju0jjv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
