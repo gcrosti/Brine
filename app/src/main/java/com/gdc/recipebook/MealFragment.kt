@@ -29,7 +29,7 @@ class MealFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         lateinit var args: MealFragmentArgs
-        val listDataManager = ListDataManager(view.context)
+        val listDataManager = SharedPrefsDataManager(view.context)
         arguments?.let {
             args = MealFragmentArgs.fromBundle(it)
         }

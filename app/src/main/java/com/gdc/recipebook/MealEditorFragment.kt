@@ -15,7 +15,8 @@ import kotlinx.android.synthetic.main.fragment_meal_editor.*
 import kotlinx.android.synthetic.main.fragment_meal_editor.view.*
 
 class MealEditorFragment: Fragment() {
-    lateinit var listDataManager: ListDataManager
+    lateinit var sharedPrefsDataManager: SharedPrefsDataManager
+    lateinit var firebaseDataManager: FirebaseDataManager
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -27,12 +28,13 @@ class MealEditorFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        listDataManager = ListDataManager(view.context)
-        val mealList = listDataManager.readList()
+        sharedPrefsDataManager = SharedPrefsDataManager(view.context)
+        firebaseDataManager = FirebaseDataManager(view.context)
+        val mealList = sharedPrefsDataManager.readList()
         lateinit var oldMeal: Meal
         arguments?.let {
             val oldRecipeName = MealEditorFragmentArgs.fromBundle(it).mealName
-            oldMeal = listDataManager.readMeal(mealList,oldRecipeName)!!
+            oldMeal = sharedPrefsDataManager.readMeal(mealList,oldRecipeName)!!
 
         }
         val mealNameEditable = Editable.Factory.getInstance().newEditable(oldMeal.name)
@@ -46,9 +48,9 @@ class MealEditorFragment: Fragment() {
             val newMeal = Meal(editName.text.toString())
             newMeal.notes = editNotes.text.toString()
             setFunction(newMeal)
-            listDataManager.editMeal(mealList,oldMeal.name,newMeal)
-            listDataManager.saveList(mealList)
-            listDataManager.saveNewMealToDatabase(newMeal)
+            sharedPrefsDataManager.editMeal(mealList,oldMeal.name,newMeal)
+            sharedPrefsDataManager.saveList(mealList)
+            firebaseDataManager.saveMeal(newMeal)
             navToMeal(newMeal.name)
 
         }
@@ -96,7 +98,7 @@ class MealEditorFragment: Fragment() {
         Log.d("checks run?","true")
         val checkBoxes = listOf<CheckBox>(proteinCheck,vegetableCheck,starchCheck,ingredientCheck,dipCheck,dressingCheck,dessertCheck,beverageCheck)
         if (meal.function.isNotEmpty()) {
-            val funcList = listDataManager.convertStringToList(meal.function)
+            val funcList = sharedPrefsDataManager.convertStringToList(meal.function)
             for (checkBox in checkBoxes) {
                 if (funcList.contains(checkBox.text)) {
                     checkBox.isChecked = true
@@ -111,8 +113,9 @@ class MealEditorFragment: Fragment() {
             val alertDialogBuilder = AlertDialog.Builder(it)
             val listener = DialogInterface.OnClickListener {
                 dialog, which ->  dialog.dismiss()
-                listDataManager.deleteMeal(mealList,name)
-                listDataManager.saveList(mealList)
+                firebaseDataManager.deleteMeal(mealList.filter { it.name == name }[0])
+                sharedPrefsDataManager.deleteMeal(mealList,name)
+                sharedPrefsDataManager.saveList(mealList)
                 navToList()
             }
             alertDialogBuilder.setTitle("Are you sure we want to delete this meal?")

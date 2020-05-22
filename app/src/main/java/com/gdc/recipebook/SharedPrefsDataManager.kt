@@ -8,11 +8,10 @@ import com.google.firebase.ktx.Firebase
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-class ListDataManager(context: Context) {
+class SharedPrefsDataManager(context: Context) {
     private val PREF_NAME = "list"
     private var prefs: SharedPreferences = context.getSharedPreferences(PREF_NAME,0)
     private val gson = Gson()
-    private val authString = context.getString(R.string.liveDataAuth)
 
     fun saveList(list: MutableList<Meal> ) {
         val sharedPrefsEditor = prefs.edit()
@@ -56,11 +55,6 @@ class ListDataManager(context: Context) {
     fun deleteMeal(mealList: MutableList<Meal>, name:String) {
         val meal  = mealList.filter { it.name == name}[0]
         mealList.remove(meal)
-    }
-
-    fun saveNewMealToDatabase(meal: Meal) {
-        val database = Firebase.database.getReference(authString)
-        database.child(meal.instanceId).child("meals").child(meal.name).setValue(meal)
     }
 
     fun clearSharedPrefs() {

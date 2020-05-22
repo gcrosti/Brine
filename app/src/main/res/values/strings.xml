@@ -6,7 +6,7 @@
     <string name="mealName">Meal Name</string>
     <string name="mealFunction">Meal Function</string>
     <string name="mealTitle">Meal Title</string>
-    <string name="mealResources">What resources (URLs, books) did you use to make this meal?</string>
+    <string name="mealResources">What resources (URLs, books) is this meal based on?</string>
     <string name="functionTitleNewMeal">Meal Function</string>
     <string name="newMealNameHint">Meal Name</string>
     <string name="createMeal">Create Meal</string>

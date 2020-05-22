@@ -2,7 +2,6 @@ package com.gdc.recipebook
 
 import android.app.Dialog
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,9 +9,6 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.fragment_meal_list.*
 import kotlinx.android.synthetic.main.view_meal_list_item.view.*
 import kotlinx.android.synthetic.main.view_newmeal_dialog.*
@@ -33,7 +29,8 @@ class MealListFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-    private lateinit var listDataManager: ListDataManager
+    private lateinit var sharedPrefsDataManager: SharedPrefsDataManager
+    private lateinit var firebaseDataManager: FirebaseDataManager
     private lateinit var mAdapter: MealListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,9 +46,10 @@ class MealListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        listDataManager = context?.let { ListDataManager(it) }!!
+        sharedPrefsDataManager = context?.let { SharedPrefsDataManager(it) }!!
+        firebaseDataManager = context?.let { FirebaseDataManager(it) }!!
 
-        if (listDataManager.readList().isEmpty()) {
+        if (sharedPrefsDataManager.readList().isEmpty()) {
             return inflater.inflate(R.layout.view_welcome,container,false)
         }
 
@@ -69,7 +67,7 @@ class MealListFragment : Fragment() {
                 val recipeName = it.recipeName.text.toString()
                 navToRecipe(recipeName)
             }
-             mAdapter = MealListAdapter(listDataManager.readList(),listener)
+             mAdapter = MealListAdapter(sharedPrefsDataManager.readList(),listener)
             adapter = mAdapter
             layoutManager = LinearLayoutManager(activity)
         }
@@ -108,8 +106,8 @@ class MealListFragment : Fragment() {
         lateinit var dialog: Dialog
         lateinit var mealList: MutableList<Meal>
         activity?.let{ it ->
-            mealList = if (listDataManager.readList().isNotEmpty()) {
-                listDataManager.readList()
+            mealList = if (sharedPrefsDataManager.readList().isNotEmpty()) {
+                sharedPrefsDataManager.readList()
             } else {
                 mutableListOf()
             }
@@ -125,9 +123,9 @@ class MealListFragment : Fragment() {
                 } else {
                     val newMeal = Meal(editText)
                     mealList.add(newMeal)
-                    listDataManager.saveList(mealList)
+                    sharedPrefsDataManager.saveList(mealList)
+                    firebaseDataManager.saveMeal(newMeal)
                     navToEditor(editText)
-                    listDataManager.saveNewMealToDatabase(newMeal)
                     dialog.dismiss()
                 }
 
