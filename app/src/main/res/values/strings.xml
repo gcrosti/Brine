@@ -22,4 +22,6 @@
     <string name="deleteMeal">Delete Meal</string>
     <string name="welcomeMessage">Welcome! Brine is a ledger of your favorite food creations.</string>
     <string name="saveFirstMeal">Save Your First Meal</string>
+    <string name="pickImage">Add Photo</string>
+    <string name="imageURL">Image URL</string>
 </resources>

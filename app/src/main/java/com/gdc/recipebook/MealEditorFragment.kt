@@ -2,6 +2,7 @@ package com.gdc.recipebook
 
 import android.app.AlertDialog
 import android.content.DialogInterface
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.util.Log
@@ -9,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import kotlinx.android.synthetic.main.fragment_meal_editor.*
@@ -17,11 +19,15 @@ import kotlinx.android.synthetic.main.fragment_meal_editor.view.*
 class MealEditorFragment: Fragment() {
     lateinit var sharedPrefsDataManager: SharedPrefsDataManager
     lateinit var firebaseDataManager: FirebaseDataManager
+
+
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         return inflater.inflate(R.layout.fragment_meal_editor,container,false)
     }
 
@@ -32,6 +38,7 @@ class MealEditorFragment: Fragment() {
         firebaseDataManager = FirebaseDataManager(view.context)
         val mealList = sharedPrefsDataManager.readList()
         lateinit var oldMeal: Meal
+        val newMeal = Meal("placeHolder")
         arguments?.let {
             val oldRecipeName = MealEditorFragmentArgs.fromBundle(it).mealName
             oldMeal = sharedPrefsDataManager.readMeal(mealList,oldRecipeName)!!
@@ -41,12 +48,23 @@ class MealEditorFragment: Fragment() {
         if (oldMeal.notes.isNotEmpty()) {
                 view.editNotes.text = Editable.Factory.getInstance().newEditable(oldMeal.notes)
             }
+        if (oldMeal.imageURI.isNotEmpty()) {
+            view.imageURI.text = oldMeal.imageURI
+        }
         view.editName.text = mealNameEditable
         setChecks(oldMeal)
 
+        imageButton.setOnClickListener {
+            val getContent = registerForActivityResult(ActivityResultContracts.GetContent()) {
+                uri: Uri? -> view.imageURI.text = uri.toString()
+            }
+            getContent.launch("image/*")
+        }
+
         saveRecipeButton.setOnClickListener {
-            val newMeal = Meal(editName.text.toString())
+            newMeal.name = editName.text.toString()
             newMeal.notes = editNotes.text.toString()
+            newMeal.imageURI = view.imageURI.text.toString()
             setFunction(newMeal)
             sharedPrefsDataManager.editMeal(mealList,oldMeal.name,newMeal)
             sharedPrefsDataManager.saveList(mealList)
@@ -59,11 +77,9 @@ class MealEditorFragment: Fragment() {
             val alert = createDeleteDialog(mealList,oldMeal.name)
             alert.show()
         }
+
+
     }
-
-
-
-
 
     private fun setFunction(meal:Meal) {
         val funcList = mutableListOf<String>()
@@ -134,6 +150,4 @@ class MealEditorFragment: Fragment() {
         action.mealName = name
         view?.findNavController()?.navigate(action)
     }
-
-
 }

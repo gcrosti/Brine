@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_meal.*
 
 
@@ -39,6 +40,9 @@ class MealFragment: Fragment() {
         {meal.function.substring(1,meal.function.length-1)} else {""}
         recipeFunction.text = funcNames
         recipeNotes.text = meal.notes
+        if (meal.imageURI.isNotEmpty()) {
+            Picasso.get().load(meal.imageURI).into(recipeImage)
+        }
 
         fabEditRecipe.setOnClickListener {
             navToEditor(meal.name)
