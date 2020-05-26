@@ -1,7 +1,11 @@
 package com.gdc.recipebook
 
 import android.app.AlertDialog
+import android.app.PendingIntent
 import android.content.DialogInterface
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
@@ -10,9 +14,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
+import com.saurabharora.customtabs.CustomTabActivityHelper
+import com.saurabharora.customtabs.extensions.launchWithFallback
 import kotlinx.android.synthetic.main.fragment_meal_editor.*
 import kotlinx.android.synthetic.main.fragment_meal_editor.view.*
 
@@ -48,15 +55,16 @@ class MealEditorFragment: Fragment() {
         if (oldMeal.notes.isNotEmpty()) {
                 view.editNotes.text = Editable.Factory.getInstance().newEditable(oldMeal.notes)
             }
-        if (oldMeal.imageURI.isNotEmpty()) {
-            view.imageURI.text = oldMeal.imageURI
+        if (!oldMeal.imageURI.isNullOrEmpty()) {
+            view.imageURI.text = Editable.Factory.getInstance().newEditable(oldMeal.imageURI)
+            view.imageButton.text = "edit photo"
         }
         view.editName.text = mealNameEditable
         setChecks(oldMeal)
 
         imageButton.setOnClickListener {
-            val getContent = registerForActivityResult(ActivityResultContracts.GetContent()) {
-                uri: Uri? -> view.imageURI.text = uri.toString()
+            val getContent = registerForActivityResult(PhotoActivityResultContract()) {
+                uri: Uri? -> view.imageURI.text = Editable.Factory.getInstance().newEditable(uri.toString())
             }
             getContent.launch("image/*")
         }
@@ -76,6 +84,28 @@ class MealEditorFragment: Fragment() {
         deleteMeal.setOnClickListener {
             val alert = createDeleteDialog(mealList,oldMeal.name)
             alert.show()
+        }
+
+        addResourceButton.setOnClickListener {
+            val bitmap = BitmapFactory.decodeResource(view.context.resources,R.drawable.common_google_signin_btn_icon_dark)
+            val requestCode = 100
+            val intent = Intent(Intent.ACTION_SEND)
+            intent.type = "text/plain"
+            intent.putExtra(Intent.EXTRA_TEXT,"https://www.facebook.com/")
+            //val pendingIntent = PendingIntent.getActivity(view.context,requestCode,intent,PendingIntent.FLAG_UPDATE_CURRENT)
+            val broadcastIntent = Intent(view.context,ResourceBroadcastReceiver().javaClass)
+
+            val pendingIntent = PendingIntent.getBroadcast(view.context,requestCode,broadcastIntent,PendingIntent.FLAG_ONE_SHOT)
+
+            val uri = Uri.parse("https://www.google.com/")
+            val customTabActivityHelper = CustomTabActivityHelper(context = view.context, lifecycle = lifecycle)
+            customTabActivityHelper.mayLaunchUrl(uri)
+
+            val customTabsIntent = CustomTabsIntent.Builder(customTabActivityHelper.session)
+                //.setToolbarColor(ContextCompat.getColor(view.context,R.color.colorAccent))
+                .setActionButton(bitmap,"Share Link",pendingIntent,true)
+                .build()
+            this.activity?.let { it1 -> customTabsIntent.launchWithFallback(activity = it1,uri = uri) }
         }
 
 
@@ -149,5 +179,10 @@ class MealEditorFragment: Fragment() {
         val action = MealEditorFragmentDirections.actionRecipeEditorFragmentToRecipeFragment()
         action.mealName = name
         view?.findNavController()?.navigate(action)
+    }
+
+    private fun selectResource() {
+
+
     }
 }

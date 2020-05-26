@@ -24,4 +24,5 @@
     <string name="saveFirstMeal">Save Your First Meal</string>
     <string name="pickImage">Add Photo</string>
     <string name="imageURL">Image URL</string>
+    <string name="addResource">Add Resource</string>
 </resources>

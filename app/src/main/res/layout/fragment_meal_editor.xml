@@ -162,7 +162,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
+    <EditText
         android:id="@+id/imageURI"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -172,5 +172,15 @@
         app:layout_constraintEnd_toStartOf="@+id/imageButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dessertCheck" />
+
+    <Button
+        android:id="@+id/addResourceButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/addResource"
+        app:layout_constraintBottom_toTopOf="@+id/testImageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/saveRecipeButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
