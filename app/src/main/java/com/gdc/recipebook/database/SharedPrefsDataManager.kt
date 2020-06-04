@@ -1,10 +1,9 @@
-package com.gdc.recipebook
+package com.gdc.recipebook.database
 
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
+import com.gdc.recipebook.database.dataclasses.Meal
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
@@ -47,9 +46,9 @@ class SharedPrefsDataManager(context: Context) {
     }
 
 
-    fun convertStringToList(string: String): List<String> {
+    fun convertStringToList(string: String): MutableList<String> {
         val stop = string.length -1
-        return string.substring(1,stop).split(", ")
+        return string.substring(1,stop).split(", ") as MutableList<String>
     }
 
     fun deleteMeal(mealList: MutableList<Meal>, name:String) {

@@ -1,6 +1,5 @@
-package com.gdc.recipebook
+package com.gdc.recipebook.screens.mealeditor
 
-import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import androidx.activity.result.contract.ActivityResultContracts

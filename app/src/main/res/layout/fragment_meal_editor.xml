@@ -118,7 +118,7 @@
         android:lines="@integer/notesLines"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageURI" />
+        app:layout_constraintTop_toBottomOf="@+id/resourcesRecyclerView" />
 
     <Button
         android:id="@+id/saveRecipeButton"
@@ -150,7 +150,6 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/defaultMargin"
         android:text="@string/pickImage"
-        app:layout_constraintBottom_toTopOf="@id/editNotes"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dessertCheck" />
 
@@ -168,19 +167,29 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/defaultMargin"
         android:text="@string/imageURL"
-        app:layout_constraintBottom_toTopOf="@+id/editNotes"
         app:layout_constraintEnd_toStartOf="@+id/imageButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dessertCheck" />
 
     <Button
         android:id="@+id/addResourceButton"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="@dimen/defaultMargin"
         android:text="@string/addResource"
-        app:layout_constraintBottom_toTopOf="@+id/testImageView"
+        app:layout_constraintBottom_toTopOf="@+id/resourcesRecyclerView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/saveRecipeButton" />
+        app:layout_constraintTop_toBottomOf="@+id/imageURI" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/resourcesRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/defaultMargin"
+        app:layout_constraintBottom_toTopOf="@id/editNotes"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/addResourceButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

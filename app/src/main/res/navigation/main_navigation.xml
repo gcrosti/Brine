@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/recipeListFragment"
-        android:name="com.gdc.recipebook.MealListFragment"
+        android:name="com.gdc.recipebook.screens.meallist.MealListFragment"
         android:label="fragment_recipe_list"
         tools:layout="@layout/fragment_meal_list" >
         <action
@@ -19,7 +19,7 @@
     </fragment>
     <fragment
         android:id="@+id/recipeFragment"
-        android:name="com.gdc.recipebook.MealFragment"
+        android:name="com.gdc.recipebook.screens.meal.MealFragment"
         android:label="RecipeFragment" >
         <argument
             android:name="mealName"
@@ -34,7 +34,7 @@
     </fragment>
     <fragment
         android:id="@+id/recipeEditorFragment"
-        android:name="com.gdc.recipebook.MealEditorFragment"
+        android:name="com.gdc.recipebook.screens.mealeditor.MealEditorFragment"
         android:label="RecipeEditorFragment" >
         <argument
             android:name="mealName"

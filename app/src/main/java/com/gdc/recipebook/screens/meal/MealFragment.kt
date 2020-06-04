@@ -1,4 +1,4 @@
-package com.gdc.recipebook
+package com.gdc.recipebook.screens.meal
 
 import android.os.Bundle
 import android.util.Log
@@ -9,6 +9,8 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.bumptech.glide.Glide
+import com.gdc.recipebook.R
+import com.gdc.recipebook.database.SharedPrefsDataManager
 import kotlinx.android.synthetic.main.fragment_meal.*
 
 
@@ -31,7 +33,8 @@ class MealFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         lateinit var args: MealFragmentArgs
-        val listDataManager = SharedPrefsDataManager(view.context)
+        val listDataManager =
+            SharedPrefsDataManager(view.context)
         arguments?.let {
             args = MealFragmentArgs.fromBundle(it)
         }
@@ -54,13 +57,15 @@ class MealFragment: Fragment() {
 
 
     private fun navToEditor(name:String) {
-        val action = MealFragmentDirections.actionRecipeFragmentToRecipeEditorFragment()
+        val action =
+            MealFragmentDirections.actionRecipeFragmentToRecipeEditorFragment()
         action.mealName = name
         view?.findNavController()?.navigate(action)
     }
 
     private fun navToMealList() {
-        val action = MealFragmentDirections.actionRecipeFragmentToRecipeListFragment()
+        val action =
+            MealFragmentDirections.actionRecipeFragmentToRecipeListFragment()
         view?.findNavController()?.navigate(action)
     }
 

@@ -1,6 +1,8 @@
-package com.gdc.recipebook
+package com.gdc.recipebook.database
 
 import android.content.Context
+import com.gdc.recipebook.R
+import com.gdc.recipebook.database.dataclasses.Meal
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
@@ -13,7 +15,7 @@ class FirebaseDataManager(context:Context) {
         database.child(meal.instanceId).child(meal.name).setValue(meal)
     }
 
-    fun deleteMeal(meal:Meal) {
+    fun deleteMeal(meal: Meal) {
         database.child(meal.instanceId).child(meal.name).removeValue()
     }
 }

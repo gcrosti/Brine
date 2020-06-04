@@ -1,11 +1,13 @@
-package com.gdc.recipebook
+package com.gdc.recipebook.screens.meallist
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.gdc.recipebook.database.dataclasses.Meal
+import com.gdc.recipebook.R
 
-class ListItemView(inflater: LayoutInflater,parent: ViewGroup):
+class MealListItemView(inflater: LayoutInflater, parent: ViewGroup):
     RecyclerView.ViewHolder(inflater.inflate(R.layout.view_meal_list_item,parent,false)) {
 
     var recipeName = itemView.findViewById<TextView>(R.id.recipeName)

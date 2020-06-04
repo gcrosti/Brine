@@ -6,7 +6,7 @@
     <string name="mealName">Meal Name</string>
     <string name="mealFunction">Meal Function</string>
     <string name="mealTitle">Meal Title</string>
-    <string name="mealResources">What resources (URLs, books) is this meal based on?</string>
+    <string name="mealResources">Your Notes</string>
     <string name="functionTitleNewMeal">Meal Function</string>
     <string name="newMealNameHint">Meal Name</string>
     <string name="createMeal">Create Meal</string>
@@ -24,5 +24,7 @@
     <string name="saveFirstMeal">Save Your First Meal</string>
     <string name="pickImage">Add Photo</string>
     <string name="imageURL">Image URL</string>
-    <string name="addResource">Add Resource</string>
+    <string name="addResource">Add Resources Used (Books, Recipes)</string>
+    <string name="delete">Delete</string>
+    <string name="testURL">https://www.gimmesomeoven.com/homemade-pasta/</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.gdc.recipebook
+package com.gdc.recipebook.screens.meallist
 
 import android.app.Dialog
 import android.os.Bundle
@@ -9,6 +9,10 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.gdc.recipebook.database.dataclasses.Meal
+import com.gdc.recipebook.R
+import com.gdc.recipebook.database.FirebaseDataManager
+import com.gdc.recipebook.database.SharedPrefsDataManager
 import kotlinx.android.synthetic.main.fragment_meal_list.*
 import kotlinx.android.synthetic.main.view_meal_list_item.view.*
 import kotlinx.android.synthetic.main.view_newmeal_dialog.*
@@ -46,8 +50,16 @@ class MealListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        sharedPrefsDataManager = context?.let { SharedPrefsDataManager(it) }!!
-        firebaseDataManager = context?.let { FirebaseDataManager(it) }!!
+        sharedPrefsDataManager = context?.let {
+            SharedPrefsDataManager(
+                it
+            )
+        }!!
+        firebaseDataManager = context?.let {
+            FirebaseDataManager(
+                it
+            )
+        }!!
 
         if (sharedPrefsDataManager.readList().isEmpty()) {
             return inflater.inflate(R.layout.view_welcome,container,false)
@@ -67,7 +79,10 @@ class MealListFragment : Fragment() {
                 val recipeName = it.recipeName.text.toString()
                 navToRecipe(recipeName)
             }
-             mAdapter = MealListAdapter(sharedPrefsDataManager.readList(),listener)
+             mAdapter = MealListAdapter(
+                 sharedPrefsDataManager.readList(),
+                 listener
+             )
             adapter = mAdapter
             layoutManager = LinearLayoutManager(activity)
         }
@@ -121,7 +136,8 @@ class MealListFragment : Fragment() {
                     val toast = Toast.makeText(view?.context,text,duration)
                     toast.show()
                 } else {
-                    val newMeal = Meal(editText)
+                    val newMeal =
+                        Meal(editText)
                     mealList.add(newMeal)
                     sharedPrefsDataManager.saveList(mealList)
                     firebaseDataManager.saveMeal(newMeal)
@@ -135,13 +151,15 @@ class MealListFragment : Fragment() {
     }
 
     private fun navToRecipe(name:String) {
-        val action = MealListFragmentDirections.actionRecipeListFragmentToRecipeFragment()
+        val action =
+            MealListFragmentDirections.actionRecipeListFragmentToRecipeFragment()
         action.mealName = name
         view?.findNavController()?.navigate(action)
     }
 
     private fun navToEditor(name:String) {
-        val action = MealListFragmentDirections.actionRecipeListFragmentToRecipeEditorFragment()
+        val action =
+            MealListFragmentDirections.actionRecipeListFragmentToRecipeEditorFragment()
         action.mealName = name
         view?.findNavController()?.navigate(action)
     }
