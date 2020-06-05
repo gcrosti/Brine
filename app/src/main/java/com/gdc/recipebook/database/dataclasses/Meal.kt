@@ -38,6 +38,6 @@ data class Meal (
     @Relation(
         parentColumn = "mealId",
         entityColumn = "mealId")
-    val mealFunctions: List<MealFunction> = listOf()
+    val mealFunctions: MealFunction = MealFunction(mealId = mealId)
 
 )

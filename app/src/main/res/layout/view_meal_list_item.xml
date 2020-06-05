@@ -1,23 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="meal"
+            type="com.gdc.recipebook.database.dataclasses.Meal" />
+
+        <variable
+            name="mealListItemViewModel"
+            type="com.gdc.recipebook.screens.meallist.MealListItemViewModel" />
+    </data>
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp"
         android:layout_gravity="center_horizontal"
-        xmlns:android="http://schemas.android.com/apk/res/android">
+        android:onClick="@{() -> mealListItemViewModel.onMealClick()}">
 
         <TextView
             android:id="@+id/recipeName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/mealName"
+            android:text="@{meal.name}"
             android:textSize="@dimen/fragmentTitleTextSize" />
 
     <TextView
         android:id="@+id/recipeFunction"
+        app:mealFunctionsFormatted="@{meal}"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/mealFunction"
+        android:text=""
         android:textStyle="bold" />
     </LinearLayout>
+</layout>

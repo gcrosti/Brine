@@ -46,4 +46,6 @@ interface RoomDatabaseDAO {
     @Query("DELETE from images_table WHERE mealId = :mealId")
     fun deleteMealImages(mealId: String)
 
+    @Query("SELECT * FROM meals_table")
+    fun getAllMeals(): MutableList<Meal>
 }
