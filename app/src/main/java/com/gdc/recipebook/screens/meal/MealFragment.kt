@@ -30,7 +30,7 @@ class MealFragment: Fragment() {
         return inflater.inflate(R.layout.fragment_meal, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    /*override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         lateinit var args: MealFragmentArgs
         val listDataManager =
@@ -52,7 +52,7 @@ class MealFragment: Fragment() {
         fabEditRecipe.setOnClickListener {
             navToEditor(meal.name)
         }
-    }
+    }*/
 
 
 

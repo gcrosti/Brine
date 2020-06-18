@@ -1,10 +1,7 @@
 package com.gdc.recipebook.database
 
 import androidx.room.*
-import com.gdc.recipebook.database.dataclasses.Image
-import com.gdc.recipebook.database.dataclasses.MealFunction
-import com.gdc.recipebook.database.dataclasses.Meal
-import com.gdc.recipebook.database.dataclasses.Resource
+import com.gdc.recipebook.database.dataclasses.*
 
 
 @Dao
@@ -37,15 +34,11 @@ interface RoomDatabaseDAO {
     @Delete
     fun deleteMeal(meal:Meal)
 
-    @Query("DELETE from meal_functions_table WHERE mealId = :mealId")
-    fun deleteMealFunctions(mealId: String)
-
-    @Query("DELETE from resources_table WHERE mealId = :mealId")
-    fun deleteMealResources(mealId: String)
-
-    @Query("DELETE from images_table WHERE mealId = :mealId")
-    fun deleteMealImages(mealId: String)
-
+    @Transaction
     @Query("SELECT * FROM meals_table")
-    fun getAllMeals(): MutableList<Meal>
+    fun getAllMeals(): List<MealWithRelations>
+
+    @Query("SELECT * FROM functions_table")
+    fun getAllFunctions(): List<MealFunction>
+
 }

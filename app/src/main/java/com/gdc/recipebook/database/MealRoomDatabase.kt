@@ -4,13 +4,10 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.gdc.recipebook.database.dataclasses.Image
-import com.gdc.recipebook.database.dataclasses.Meal
-import com.gdc.recipebook.database.dataclasses.MealFunction
-import com.gdc.recipebook.database.dataclasses.Resource
+import com.gdc.recipebook.database.dataclasses.*
 
 
-@Database(entities = [Image::class, Meal::class,MealFunction::class,Resource::class],version = 1,exportSchema = false)
+@Database(entities = [Image::class, Meal::class,MealFunction::class,Resource::class],version = 2,exportSchema = false)
 abstract class MealRoomDatabase: RoomDatabase() {
     abstract val databaseDAO: RoomDatabaseDAO
 

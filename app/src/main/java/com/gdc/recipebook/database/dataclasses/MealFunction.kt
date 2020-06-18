@@ -4,14 +4,13 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-
-@Entity(tableName = "meal_functions_table")
+@Entity(tableName = "functions_table")
 data class MealFunction(
     @PrimaryKey(autoGenerate = true)
     var functionId: Long = 0L,
 
-    @ColumnInfo(name = "mealId")
-    var mealId: Long,
+    @ColumnInfo(name = "functionMealId")
+    var functionMealId: Long = 0L,
 
     @ColumnInfo(name = "Protein")
     var protein: Boolean = false,

@@ -1,11 +1,14 @@
 package com.gdc.recipebook.screens.meallist
 
+import android.util.Log
 import com.gdc.recipebook.database.dataclasses.MealFunction
 
 
 fun convertListToString(list: List<String>): String {
     val stringLength = list.size - 2
-    return list.toString().slice(IntRange(1,stringLength))
+    val string = list.toString().slice(IntRange(1,stringLength))
+    Log.d("stringfromlist",string)
+    return string
 }
 
 fun convertFuncsToNameList(mealFunction: MealFunction): List<String> {

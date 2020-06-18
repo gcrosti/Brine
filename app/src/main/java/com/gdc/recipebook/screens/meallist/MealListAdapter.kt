@@ -3,10 +3,10 @@ package com.gdc.recipebook.screens.meallist
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import com.gdc.recipebook.database.dataclasses.Meal
+import com.gdc.recipebook.database.dataclasses.MealWithRelations
 
 class MealListAdapter():
-    ListAdapter<Meal,MealListItemView>(MealListDiffCallback()) {
+    ListAdapter<MealWithRelations,MealListItemView>(MealListDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MealListItemView {
         return MealListItemView.from(parent)
@@ -19,14 +19,14 @@ class MealListAdapter():
 }
 
 
-class MealListDiffCallback: DiffUtil.ItemCallback<Meal>() {
-    override fun areItemsTheSame(oldItem: Meal, newItem: Meal): Boolean {
-        return oldItem.mealId == newItem.mealId
+class MealListDiffCallback: DiffUtil.ItemCallback<MealWithRelations>() {
+    override fun areItemsTheSame(oldItem: MealWithRelations, newItem: MealWithRelations): Boolean {
+        return oldItem.mealWithResources.mealWithFunctions.meal.mealId == newItem.mealWithResources.mealWithFunctions.meal.mealId
     }
 
-    override fun areContentsTheSame(oldItem: Meal, newItem: Meal): Boolean {
-        if (oldItem.name == newItem.name) {
-            return oldItem.mealFunctions == newItem.mealFunctions
+    override fun areContentsTheSame(oldItem: MealWithRelations, newItem: MealWithRelations): Boolean {
+        if (oldItem.mealWithResources.mealWithFunctions.meal.name == newItem.mealWithResources.mealWithFunctions.meal.name) {
+            return oldItem.mealWithResources.resources == newItem.mealWithResources.resources
         }
         return false
     }

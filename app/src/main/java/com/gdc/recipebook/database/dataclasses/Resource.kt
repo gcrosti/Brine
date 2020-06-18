@@ -10,8 +10,8 @@ data class Resource(
     @PrimaryKey(autoGenerate = true)
     var resourceId: Long = 0L,
 
-    @ColumnInfo(name = "mealId")
-    var mealId:Long,
+    @ColumnInfo(name = "resourceMealId")
+    var resourceMealId:Long,
 
     @ColumnInfo(name = "resourceURL")
     var resourceURL: String = ""

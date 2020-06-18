@@ -10,8 +10,8 @@ data class Image(
     @PrimaryKey(autoGenerate = true)
     var imageId: Long = 0L,
 
-    @ColumnInfo(name = "MealId")
-    var mealId: Long,
+    @ColumnInfo(name = "imageMealId")
+    var imageMealId: Long,
 
     @ColumnInfo(name = "imageURL")
     var imageURL: String = ""
