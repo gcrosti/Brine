@@ -5,26 +5,31 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.gdc.recipebook.database.Repository
 import com.gdc.recipebook.database.RoomDatabaseDAO
-import com.gdc.recipebook.database.dataclasses.Meal
-import com.gdc.recipebook.database.dataclasses.MealWithRelations
-import kotlinx.coroutines.*
+import com.gdc.recipebook.database.dataclasses.MealWithFunctions
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 class MealListViewModel(dataSource: RoomDatabaseDAO, application: Application): ViewModel() {
 
-    private var _meals = MutableLiveData<MutableList<MealWithRelations>>()
+    private var _mealsWithFunctions = MutableLiveData<MutableList<MealWithFunctions>?>()
     val database = dataSource
 
     private val viewModelJob = Job()
 
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
+    private val mealRepository = Repository(database)
+
     init {
         getAllMeals()
     }
 
-    val meals: MutableLiveData<MutableList<MealWithRelations>>
-        get() = _meals
+    val mealsWithFunctions: MutableLiveData<MutableList<MealWithFunctions>?>
+        get() = _mealsWithFunctions
 
 
     private var _showNewMealDialog = MutableLiveData(false)
@@ -39,17 +44,9 @@ class MealListViewModel(dataSource: RoomDatabaseDAO, application: Application): 
 
     private fun getAllMeals() {
         uiScope.launch {
-            _meals.value = getAllMealsFromDatabase()
-            val size = _meals.value!!.size
+            _mealsWithFunctions.value = mealRepository.getAllMealsFromDatabase()
+            val size = _mealsWithFunctions.value!!.size
             Log.d("meals database size:",size.toString())
-        }
-    }
-
-    private suspend fun getAllMealsFromDatabase(): MutableList<MealWithRelations> {
-        return withContext(Dispatchers.IO) {
-            val data = database.getAllMeals() as MutableList<MealWithRelations>
-
-            data
         }
     }
 

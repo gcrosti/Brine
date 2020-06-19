@@ -19,14 +19,17 @@
         tools:targetApi="m">
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <receiver android:name=".screens.mealeditor.ResourceBroadcastReceiver"/>
+        <receiver
+            android:name=".screens.mealeditor.MyBroadcastReceiver"
+            android:enabled="true"/>
     </application>
 
 </manifest>

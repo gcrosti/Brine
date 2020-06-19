@@ -29,7 +29,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:autofillHints=""
-            android:text="@{mealEditorViewModel.mealWithRelations.mealWithResources.mealWithFunctions.meal.name}"
+            android:text="@{mealEditorViewModel.meal.name}"
         />
 
         <TextView
@@ -50,7 +50,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/dipCheck"
             app:layout_constraintTop_toBottomOf="@+id/functionSectionTitle"
-            android:checked="@{mealEditorViewModel.mealWithRelations.mealWithResources.mealWithFunctions.mealFunctions.starch}"/>
+            android:checked="@{mealEditorViewModel.mealFunctions.starch}"
+            android:onClick="@{() -> mealEditorViewModel.onStarchClick()}"/>
 
         <CheckBox
             android:id="@+id/dressingCheck"
@@ -60,7 +61,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/dipCheck"
             app:layout_constraintTop_toBottomOf="@+id/starchCheck"
-            android:checked="@{mealEditorViewModel.mealWithRelations.mealWithResources.mealWithFunctions.mealFunctions.dressing}"/>
+            android:checked="@{mealEditorViewModel.mealFunctions.dressing}"
+            android:onClick="@{() -> mealEditorViewModel.onDressingClick()}"/>
 
         <CheckBox
             android:id="@+id/proteinCheck"
@@ -70,7 +72,8 @@
             app:layout_constraintEnd_toStartOf="@+id/dipCheck"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/functionSectionTitle"
-            android:checked="@{mealEditorViewModel.mealWithRelations.mealWithResources.mealWithFunctions.mealFunctions.protein}"/>
+            android:checked="@{mealEditorViewModel.mealFunctions.protein}"
+            android:onClick="@{() -> mealEditorViewModel.onProteinClick()}"/>
 
         <CheckBox
             android:id="@+id/ingredientCheck"
@@ -80,7 +83,8 @@
             app:layout_constraintEnd_toStartOf="@+id/dipCheck"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/proteinCheck"
-            android:checked="@{mealEditorViewModel.mealWithRelations.mealWithResources.mealWithFunctions.mealFunctions.ingredient}"/>
+            android:checked="@{mealEditorViewModel.mealFunctions.ingredient}"
+            android:onClick="@{() -> mealEditorViewModel.onIngredientClick()}"/>
 
         <CheckBox
             android:id="@+id/dipCheck"
@@ -90,7 +94,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/vegetableCheck"
-            android:checked="@{mealEditorViewModel.mealWithRelations.mealWithResources.mealWithFunctions.mealFunctions.dip}"/>
+            android:checked="@{mealEditorViewModel.mealFunctions.dip}"
+            android:onClick="@{() -> mealEditorViewModel.onDipClick()}"/>
 
         <CheckBox
             android:id="@+id/vegetableCheck"
@@ -100,7 +105,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/functionSectionTitle"
-            android:checked="@{mealEditorViewModel.mealWithRelations.mealWithResources.mealWithFunctions.mealFunctions.veg}"/>
+            android:checked="@{mealEditorViewModel.mealFunctions.veg}"
+            android:onClick="@{() -> mealEditorViewModel.onVegClick()}"/>
 
         <CheckBox
             android:id="@+id/beverageCheck"
@@ -110,7 +116,8 @@
             app:layout_constraintEnd_toStartOf="@+id/dessertCheck"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/dipCheck"
-            android:checked="@{mealEditorViewModel.mealWithRelations.mealWithResources.mealWithFunctions.mealFunctions.beverage}"/>
+            android:checked="@{mealEditorViewModel.mealFunctions.beverage}"
+            android:onClick="@{() -> mealEditorViewModel.onBeverageClick()}"/>
 
 
         <CheckBox
@@ -121,7 +128,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/dipCheck"
-            android:checked="@{mealEditorViewModel.mealWithRelations.mealWithResources.mealWithFunctions.mealFunctions.dessert}"/>
+            android:checked="@{mealEditorViewModel.mealFunctions.dessert}"
+            android:onClick="@{() -> mealEditorViewModel.onDessertClick()}"/>
 
         <EditText
             android:id="@+id/editNotes"
@@ -139,7 +147,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/resourcesRecyclerView"
-            android:text="@{mealEditorViewModel.mealWithRelations.mealWithResources.mealWithFunctions.meal.notes}"/>
+            android:text="@{mealEditorViewModel.meal.notes}"/>
 
         <Button
             android:id="@+id/saveRecipeButton"
@@ -185,7 +193,8 @@
             android:layout_margin="@dimen/defaultMargin"
             app:layout_constraintEnd_toStartOf="@+id/imageButton"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/dessertCheck" />
+            app:layout_constraintTop_toBottomOf="@+id/dessertCheck"
+            android:text="@{mealEditorViewModel.imageURI}"/>
 
         <Button
             android:id="@+id/addResourceButton"
@@ -196,7 +205,8 @@
             app:layout_constraintBottom_toTopOf="@+id/resourcesRecyclerView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageURI" />
+            app:layout_constraintTop_toBottomOf="@+id/imageURI"
+            android:onClick="@{() -> mealEditorViewModel.onAddResourceClick()}"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/resourcesRecyclerView"

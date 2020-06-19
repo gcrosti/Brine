@@ -10,7 +10,7 @@ data class MealFunction(
     var functionId: Long = 0L,
 
     @ColumnInfo(name = "functionMealId")
-    var functionMealId: Long = 0L,
+    var functionMealId: Long,
 
     @ColumnInfo(name = "Protein")
     var protein: Boolean = false,

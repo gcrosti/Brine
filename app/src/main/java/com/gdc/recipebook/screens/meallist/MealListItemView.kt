@@ -4,24 +4,18 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelStore
-import androidx.lifecycle.ViewModelStoreOwner
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.gdc.recipebook.database.dataclasses.Meal
-import com.gdc.recipebook.R
-import com.gdc.recipebook.database.dataclasses.MealWithRelations
+import com.gdc.recipebook.database.dataclasses.MealWithFunctions
 import com.gdc.recipebook.databinding.ViewMealListItemBinding
 
 class MealListItemView(private val binding: ViewMealListItemBinding):
     RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(meal: MealWithRelations) {
-        binding.meal = meal.mealWithResources.meal
-        Log.d("meal functions", meal.mealWithResources.meal.mealFunctions.toString())
+    fun bind(mealWithFunctions: MealWithFunctions) {
+        binding.mealWithFunctions = mealWithFunctions
+        Log.d("meal functions", mealWithFunctions.toString())
         binding.executePendingBindings()
     }
 

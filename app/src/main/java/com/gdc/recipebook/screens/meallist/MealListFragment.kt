@@ -45,23 +45,19 @@ class MealListFragment : Fragment() {
         binding.mealListViewModel = mealListViewModel
 
         val adapter = MealListAdapter()
-        adapter.submitList(mealListViewModel.meals.value)
+
+        mealListViewModel.mealsWithFunctions.observe(viewLifecycleOwner, Observer {
+            adapter.submitList(it)
+        })
 
         binding.recipeListRecyclerView.adapter = adapter
-
-        mealListViewModel.meals.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                adapter.submitList(mealListViewModel.meals.value)
-                Log.d("list submitted","to meallist adapter")
-            }
-        })
 
         binding.lifecycleOwner = this
 
 
         mealListViewModel.showNewMealDialog.observe(viewLifecycleOwner, Observer {
             if (it == true) {
-                    val dialog = createRecipeDialog()
+                    val dialog = createRecipeDialog(mealListViewModel)
                     dialog.show()
                 }
 
@@ -101,7 +97,7 @@ class MealListFragment : Fragment() {
             }
     }
 
-    private fun createRecipeDialog(): Dialog {
+    private fun createRecipeDialog(viewModel: MealListViewModel): Dialog {
         lateinit var dialog: Dialog
         this.context?.let {
             dialog = Dialog(it)
@@ -110,6 +106,7 @@ class MealListFragment : Fragment() {
                 val editText = dialog.recipeNameEditor.text.toString()
                 navToEditor(editText)
                 dialog.dismiss()
+                Log.d("arg from user",editText)
             }
         }
         return dialog

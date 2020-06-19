@@ -7,5 +7,9 @@ import com.gdc.recipebook.database.dataclasses.MealWithFunctions
 
 @BindingAdapter("mealFunctionsFormatted")
 fun TextView.setMealFunctionsFormatted(mealWithFunctions: MealWithFunctions) {
-    text = convertListToString(convertFuncsToNameList(mealWithFunctions.mealFunctions))
+    text = mealWithFunctions.mealFunctions?.let { convertFuncsToNameList(it) }?.let {
+        convertListToString(
+            it
+        )
+    }
 }

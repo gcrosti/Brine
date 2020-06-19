@@ -28,20 +28,31 @@ class MealEditorFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
+        //CREATE BINDING OBJECT
         val binding: FragmentMealEditorBinding = DataBindingUtil.inflate(
             inflater,R.layout.fragment_meal_editor,container,false)
 
         val application = requireNotNull(this.activity).application
 
+        //CREATE DATABASE REFERENCE
         val dataSource = MealRoomDatabase.getInstance(application).databaseDAO
-        val viewModelFactory = MealEditorViewModelFactory(dataSource,application)
+
+        //RETRIEVE ARG DATA
+        var nameFromArg = ""
+        arguments?.let {
+            nameFromArg = MealEditorFragmentArgs.fromBundle(it).mealName
+        }
+
+        //CREATE VIEWMODEL AND SET OBJECT RELATIONS
+        val viewModelFactory = MealEditorViewModelFactory(dataSource,application,nameFromArg)
 
         val mealEditorViewModel = viewModelFactory.create(MealEditorViewModel::class.java)
 
-        arguments?.let {
-            mealEditorViewModel.setMealFromArg(MealEditorFragmentArgs.fromBundle(it).mealName)
-        }
+        mealEditorViewModel.newMealId.observe(viewLifecycleOwner, Observer {
+            mealEditorViewModel.setMealWithRelations(mealEditorViewModel.mealName)
+        })
 
+        //BUTTON CLICK HANDLERS
         mealEditorViewModel.onNewImageClick.observe(viewLifecycleOwner,  Observer {
             if (it == true) {
                 val getContent =
@@ -56,7 +67,6 @@ class MealEditorFragment: Fragment() {
             if (it == true) {
                 mealEditorViewModel.onSave()
                 navToList()
-                //mealEditorViewModel.meal.value?.mealWithResources?.meal?.name?.let { it1 -> navToMeal(it1) }
             }
         })
 
@@ -64,6 +74,12 @@ class MealEditorFragment: Fragment() {
             if (it == true) {
                 val alert = createDeleteDialog(mealEditorViewModel)
                 alert.show()
+            }
+        })
+
+        mealEditorViewModel.onAddResourcesClick.observe(viewLifecycleOwner, Observer {
+            if (it == true) {
+                view?.context?.let { it1 -> mealEditorViewModel.addResource(it1) }
             }
         })
 
@@ -138,11 +154,5 @@ class MealEditorFragment: Fragment() {
         view?.findNavController()?.navigate(action)
     }
 
-    private fun createPendingIntent(mealList: MutableList<Meal>, meal: Meal): PendingIntent {
-        val resourceBroadcastReceiver =
-            ResourceBroadcastReceiver()
-        val intent = Intent(this.context,resourceBroadcastReceiver::class.java)
-        Log.d("intent data", intent.data.toString())
-        return PendingIntent.getBroadcast(this.context,0,intent,0)
-    }
+
 }

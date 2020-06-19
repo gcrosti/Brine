@@ -7,12 +7,13 @@ import com.gdc.recipebook.database.RoomDatabaseDAO
 
 class MealEditorViewModelFactory(
     private val dataSource: RoomDatabaseDAO,
-    private val application: Application): ViewModelProvider.Factory {
+    private val application: Application,
+    private val mealName: String): ViewModelProvider.Factory {
 
     @Suppress("unchecked_cast")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(MealEditorViewModel::class.java)) {
-            return MealEditorViewModel(dataSource, application) as T
+            return MealEditorViewModel(mealName, dataSource, application) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

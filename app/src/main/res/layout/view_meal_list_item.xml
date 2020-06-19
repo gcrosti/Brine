@@ -4,8 +4,8 @@
 
     <data>
         <variable
-            name="meal"
-            type="com.gdc.recipebook.database.dataclasses.Meal" />
+            name="mealWithFunctions"
+            type="com.gdc.recipebook.database.dataclasses.MealWithFunctions" />
 
     </data>
     <LinearLayout
@@ -19,12 +19,12 @@
             android:id="@+id/recipeName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{meal.name}"
+            android:text="@{mealWithFunctions.meal.name}"
             android:textSize="@dimen/fragmentTitleTextSize" />
 
     <TextView
         android:id="@+id/recipeFunction"
-        app:mealFunctionsFormatted="@{meal}"
+        app:mealFunctionsFormatted="@{mealWithFunctions}"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text=""
