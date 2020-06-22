@@ -2,15 +2,14 @@ package com.gdc.recipebook.screens.mealeditor
 
 import android.app.Application
 import android.app.PendingIntent
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Log
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.gdc.recipebook.MainActivity
 import com.gdc.recipebook.R
 import com.gdc.recipebook.database.Repository
@@ -21,16 +20,30 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class MealEditorViewModel(var mealName: String, dataSource: RoomDatabaseDAO,application: Application): ViewModel() {
+class MealEditorViewModel(): ViewModel() {
 
-    //BOILERPLATE
-    val database = dataSource
+
+
+
+    //SET THREAD SCOPE
     private var viewModelJob = Job()
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
-    private val mealRepository = Repository(dataSource)
 
+    //RETRIEVE DATABASE
+    private lateinit var database: RoomDatabaseDAO
+    private lateinit var mealRepository: Repository
 
+    fun setDatabase(dataSource: RoomDatabaseDAO) {
+        database = dataSource
+        mealRepository = Repository(dataSource)
+    }
 
+    //RETRIEVE MEALNAME
+    private lateinit var mealName: String
+    fun setMealName(name: String) {
+        mealName = name
+        Log.d("newmealname",name)
+    }
 
     //CLICKLISTENERS
     private var _onNewImageClick = MutableLiveData(false)
@@ -49,6 +62,10 @@ class MealEditorViewModel(var mealName: String, dataSource: RoomDatabaseDAO,appl
     val onAddResourcesClick: LiveData<Boolean>
         get() = _onAddResourcesClick
 
+    private var _onResourceAdded = MutableLiveData(false)
+    val onResourceAdded: LiveData<Boolean>
+        get() = _onResourceAdded
+
     //DATA FROM ARGS OR ACTIVITIES
     private var _newMealId = MutableLiveData(0L)
     val newMealId: LiveData<Long>
@@ -58,30 +75,22 @@ class MealEditorViewModel(var mealName: String, dataSource: RoomDatabaseDAO,appl
     val imageURI: LiveData<String>
         get() = _imageURI
 
-    private var _ResourceURI = MutableLiveData("")
+    private var _resourceURI = MutableLiveData("")
     val resourceURI: LiveData<String>
-        get() = _ResourceURI
-
+        get() = _resourceURI
 
 
     //LIVE DATA TO BE SAVED
     private var _mealWithRelations = MutableLiveData<MealWithRelations>()
 
-    val mealFunctions: LiveData<MealFunction>
-        get() = _mealWithRelations.value!!.functions
+    val mealFunctions: LiveData<MealFunction>?
+        get() = _mealWithRelations.value?.functions
 
-    val meal: LiveData<Meal>
-        get() = _mealWithRelations.value!!.meal
+    val meal: LiveData<Meal>?
+        get() = _mealWithRelations.value?.meal
 
-    val mealResources: LiveData<MutableList<Resource>>
-        get() = _mealWithRelations.value!!.resources
-
-    init {
-        setNewMealId(mealName)
-        val meal = MutableLiveData(Meal(name = mealName))
-        val functions = MutableLiveData(MealFunction(functionMealId = 0L))
-        _mealWithRelations.value = MealWithRelations(meal = meal, functions = functions)
-    }
+    val mealResources: LiveData<MutableList<Resource>>?
+        get() = _mealWithRelations.value?.resources
 
     fun setMealWithRelations(name:String) {
         val newMeal = MutableLiveData(Meal(mealId = _newMealId.value!!, name = name))
@@ -89,11 +98,25 @@ class MealEditorViewModel(var mealName: String, dataSource: RoomDatabaseDAO,appl
 
     }
 
-    private fun setNewMealId(name: String) {
+    fun setNewMealId(name: String) {
         uiScope.launch {
             _newMealId.value = mealRepository.setMeal(name)
+            val meal = MutableLiveData(Meal(name = mealName))
+            val functions = MutableLiveData(MealFunction(functionMealId = 0L))
+            _mealWithRelations.value = MealWithRelations(meal = meal, functions = functions)
         }
     }
+
+
+    //ADD RESOURCE
+    fun addNewResource(uri: String) {
+        Log.d("newresourceadded", uri)
+
+    }
+
+
+
+
 
 
     //ADD NEW IMAGE WHEN USER SELECTS LOGIC
@@ -149,35 +172,6 @@ class MealEditorViewModel(var mealName: String, dataSource: RoomDatabaseDAO,appl
     fun onAddResourceClick() {
         _onAddResourcesClick.value = true
     }
-
-    fun onResourceAdded() {
-        _onAddResourcesClick.value = false
-    }
-
-    fun addResource(context: Context) {
-        val bitmap = BitmapFactory.decodeResource(context.resources,
-            R.drawable.common_full_open_on_phone
-        )
-        val pendingIntent = createPendingIntent(context)
-        val uri = Uri.parse("https://www.google.com/")
-        val intentBuilder = CustomTabsIntent.Builder()
-        intentBuilder.addMenuItem("callback",pendingIntent)
-        intentBuilder.setActionButton(bitmap,"callback",pendingIntent,true)
-        context?.let { it ->
-            val customTabsIntent = intentBuilder.build()
-            customTabsIntent.intent.setPackage("com.android.chrome")
-            customTabsIntent.intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            customTabsIntent.launchUrl(it,uri)}
-    }
-
-
-    private fun createPendingIntent(context: Context): PendingIntent {
-        val resourceBroadcastReceiver = MyBroadcastReceiver()
-        val intent = Intent(context,resourceBroadcastReceiver::class.java)
-        Log.d("intent data", intent.data.toString())
-        return PendingIntent.getBroadcast(context,0,intent,0)
-    }
-
 
 
     //MEAL FUNCTIONS LOGIC
@@ -239,15 +233,5 @@ class MealEditorViewModel(var mealName: String, dataSource: RoomDatabaseDAO,appl
 
 }
 
-class MyBroadcastReceiver: ResourceBroadcastReceiver() {
-    override fun onReceive(context: Context?, intent: Intent?) {
-        super.onReceive(context, intent)
-        val onReceiveIntent = Intent(context,MainActivity::class.java)
-        onReceiveIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        onReceiveIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        context?.startActivity(onReceiveIntent)
-        if (intent != null) {
-            Log.d("received data", intent.data.toString())
-        }
-    }
-}
+
+

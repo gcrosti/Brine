@@ -5,6 +5,8 @@
     android:id="@+id/main_navigation"
     app:startDestination="@id/recipeListFragment">
 
+
+
     <fragment
         android:id="@+id/recipeListFragment"
         android:name="com.gdc.recipebook.screens.meallist.MealListFragment"

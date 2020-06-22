@@ -1,4 +1,4 @@
-package com.gdc.recipebook.screens.mealeditor
+package com.gdc.recipebook.screens.mealeditor.resources
 
 import android.view.LayoutInflater
 import android.view.View

@@ -28,8 +28,8 @@
             </intent-filter>
         </activity>
         <receiver
-            android:name=".screens.mealeditor.MyBroadcastReceiver"
-            android:enabled="true"/>
+            android:name=".screens.mealeditor.MealEditorFragment$ResourceBroadcastReceiver"
+            android:enabled="true" />
     </application>
 
 </manifest>

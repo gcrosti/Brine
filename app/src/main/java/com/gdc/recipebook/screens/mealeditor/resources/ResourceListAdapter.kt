@@ -1,10 +1,10 @@
-package com.gdc.recipebook.screens.mealeditor
+package com.gdc.recipebook.screens.mealeditor.resources
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.gdc.recipebook.screens.mealeditor.ResourceListItemView
+import com.gdc.recipebook.screens.mealeditor.resources.ResourceListItemView
 
 class ResourceListAdapter(var resourceList: List<String>,val clickListener: View.OnClickListener):
     RecyclerView.Adapter<ResourceListItemView>() {
