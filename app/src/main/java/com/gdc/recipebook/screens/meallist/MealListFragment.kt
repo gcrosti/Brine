@@ -12,8 +12,12 @@ import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import com.gdc.recipebook.R
 import com.gdc.recipebook.database.MealRoomDatabase
+import com.gdc.recipebook.database.dataclasses.Meal
 import com.gdc.recipebook.databinding.FragmentMealListBinding
+import com.gdc.recipebook.databinding.ViewWelcomeBinding
+import com.gdc.recipebook.screens.mealeditor.MealEditorFragmentDirections
 import kotlinx.android.synthetic.main.view_newmeal_dialog.*
+import kotlinx.android.synthetic.main.view_welcome.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -31,10 +35,10 @@ class MealListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        Log.d("Fragment","MealListFragment")
-
         val binding: FragmentMealListBinding = DataBindingUtil.inflate(
             inflater,R.layout.fragment_meal_list,container,false)
+
+        var welcomeBinding: ViewWelcomeBinding? = null
 
         val application = requireNotNull(this.activity).application
 
@@ -44,10 +48,16 @@ class MealListFragment : Fragment() {
 
         binding.mealListViewModel = mealListViewModel
 
-        val adapter = MealListAdapter()
+        val adapter = MealListAdapter(MealListListener { name -> navToMeal(name) })
 
         mealListViewModel.mealsWithFunctions.observe(viewLifecycleOwner, Observer {
-            adapter.submitList(it)
+            if (it.isNullOrEmpty()) {
+                welcomeBinding = DataBindingUtil.inflate(
+                    inflater,R.layout.view_welcome,container,false)
+
+            } else {
+                adapter.submitList(it)
+                Log.d("list submitted",it.toString())}
         })
 
         binding.recipeListRecyclerView.adapter = adapter
@@ -57,24 +67,18 @@ class MealListFragment : Fragment() {
 
         mealListViewModel.showNewMealDialog.observe(viewLifecycleOwner, Observer {
             if (it == true) {
-                    val dialog = createRecipeDialog(mealListViewModel)
+                    val dialog = createRecipeDialog()
                     dialog.show()
                 }
 
         })
 
 
-        //mealListViewModel.meals.observe(viewLifecycleOwner, Observer {
-        //    if (it.isEmpty()) {
-        //        welcomeButton.setOnClickListener() {
-        //            createRecipeDialog(mealListViewModel).show()
-        //        }
-//
-        //        //return inflater.inflate(R.layout.view_welcome,container,false)
-        //    }
-       // })
-
         // Inflate the layout for this fragment
+        if(welcomeBinding != null) {
+            Log.d("welcome inflated","not null")
+            return welcomeBinding!!.root
+        }
         return binding.root
     }
 
@@ -97,7 +101,7 @@ class MealListFragment : Fragment() {
             }
     }
 
-    private fun createRecipeDialog(viewModel: MealListViewModel): Dialog {
+    private fun createRecipeDialog(): Dialog {
         lateinit var dialog: Dialog
         this.context?.let {
             dialog = Dialog(it)
@@ -106,7 +110,6 @@ class MealListFragment : Fragment() {
                 val editText = dialog.recipeNameEditor.text.toString()
                 navToEditor(editText)
                 dialog.dismiss()
-                Log.d("arg from user",editText)
             }
         }
         return dialog
@@ -115,6 +118,13 @@ class MealListFragment : Fragment() {
     private fun navToEditor(name:String) {
         val action =
             MealListFragmentDirections.actionRecipeListFragmentToRecipeEditorFragment()
+        action.mealName = name
+        view?.findNavController()?.navigate(action)
+    }
+
+    private fun navToMeal(name:String) {
+        val action =
+            MealListFragmentDirections.actionRecipeListFragmentToRecipeFragment()
         action.mealName = name
         view?.findNavController()?.navigate(action)
     }

@@ -22,6 +22,12 @@ interface RoomDatabaseDAO {
     @Delete
     fun deleteMeal(meal:Meal)
 
+    @Delete
+    fun deleteFunctions(function: MealFunction)
+
+    @Delete
+    fun deleteImage(image:Image)
+
     @Query("DELETE FROM functions_table WHERE functionMealId ==:mealId ")
     fun deleteFunctionsFromId(mealId:Long)
 
@@ -30,6 +36,9 @@ interface RoomDatabaseDAO {
 
     @Query("DELETE FROM resources_table WHERE resourceMealId == :mealId")
     fun deleteResourcesFromId(mealId:Long)
+
+
+    //GETTERS
 
     @Transaction
     @Query("SELECT * FROM meals_table")
@@ -40,5 +49,12 @@ interface RoomDatabaseDAO {
 
     @Query("SELECT * FROM meals_table WHERE name == :mealName")
     fun getMealFromName(mealName: String): Meal
+
+    @Query("SELECT * FROM functions_table WHERE functionMealId == :id")
+    fun getFunctionsFromId(id: Long): MealFunction
+
+    @Query("SELECT * FROM images_table WHERE imageMealId == :id")
+    fun getImagesFromId(id: Long): List<Image>
+
 
 }

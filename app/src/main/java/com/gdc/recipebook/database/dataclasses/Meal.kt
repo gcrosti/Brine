@@ -6,7 +6,7 @@ import com.google.firebase.iid.FirebaseInstanceId
 @Entity(tableName = "meals_table")
 data class Meal (
     @PrimaryKey(autoGenerate = true)
-    val mealId: Long = 0L,
+    var mealId: Long = 0L,
 
     @ColumnInfo(name = "name")
     var name: String,

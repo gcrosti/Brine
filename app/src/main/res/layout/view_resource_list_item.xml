@@ -1,11 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <variable
+            name="resource"
+            type="com.gdc.recipebook.database.dataclasses.Resource" />
+        <variable
+            name="clickListener"
+            type = "com.gdc.recipebook.screens.mealeditor.resources.ResourceListListener"/>
+
+    </data>
+
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:padding="16dp"
-    android:layout_gravity="center_horizontal"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:layout_gravity="center_horizontal">
 
     <TextView
         android:id="@+id/resourceURL"
@@ -24,7 +35,9 @@
         android:background="#0003DAC5"
         android:text="@string/delete"
         android:textAlignment="textEnd"
-        android:textColor="#F44336" />
+        android:textColor="#F44336"
+        android:onClick="@{() -> clickListener}"/>
 
 
 </LinearLayout>
+</layout>

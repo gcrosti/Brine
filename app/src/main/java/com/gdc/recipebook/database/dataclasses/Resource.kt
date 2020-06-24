@@ -11,7 +11,7 @@ data class Resource(
     var resourceId: Long = 0L,
 
     @ColumnInfo(name = "resourceMealId")
-    var resourceMealId:Long,
+    var resourceMealId:Long = 0L,
 
     @ColumnInfo(name = "resourceURL")
     var resourceURL: String = ""

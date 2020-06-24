@@ -9,7 +9,6 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
-import android.text.Editable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -17,21 +16,20 @@ import android.view.ViewGroup
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import com.gdc.recipebook.MainActivity
 import com.gdc.recipebook.R
 import com.gdc.recipebook.database.MealRoomDatabase
-import com.gdc.recipebook.database.dataclasses.Meal
+import com.gdc.recipebook.database.dataclasses.Resource
 import com.gdc.recipebook.databinding.FragmentMealEditorBinding
-import kotlin.math.log
 
 
 class MealEditorFragment: Fragment() {
 
-
-    lateinit var urlfromuser: String
+    //CREATE VIEWMODEL AND SET OBJECT RELATIONS
+    val viewModelFactory = MealEditorViewModelFactory()
+    val mealEditorViewModel = viewModelFactory.create(MealEditorViewModel::class.java)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -52,27 +50,19 @@ class MealEditorFragment: Fragment() {
         var nameFromArg = ""
         arguments?.let {
             nameFromArg = MealEditorFragmentArgs.fromBundle(it).mealName
-            binding.editName.text = Editable.Factory.getInstance().newEditable(nameFromArg)
+            mealEditorViewModel.mealName = nameFromArg
         }
 
-        //CREATE VIEWMODEL AND SET OBJECT RELATIONS
-        val viewModelFactory = MealEditorViewModelFactory()
-        val mealEditorViewModel = viewModelFactory.create(MealEditorViewModel::class.java)
-
         mealEditorViewModel.setDatabase(dataSource)
-        mealEditorViewModel.setMealName(nameFromArg)
-        mealEditorViewModel.setNewMealId(nameFromArg)
+        mealEditorViewModel.createNewMealId()
 
-        mealEditorViewModel.newMealId.observe(viewLifecycleOwner, Observer {
-            mealEditorViewModel.setMealWithRelations(nameFromArg)
-        })
 
         //BUTTON CLICK HANDLERS
         mealEditorViewModel.onNewImageClick.observe(viewLifecycleOwner,  Observer {
             if (it == true) {
                 val getContent =
                     registerForActivityResult(PhotoActivityResultContract()) { uri: Uri? ->
-                        mealEditorViewModel.addNewImage(uri.toString())
+                        mealEditorViewModel.addNewImageURL(uri.toString())
                     }
                 getContent.launch("image/*")
             }
@@ -93,48 +83,35 @@ class MealEditorFragment: Fragment() {
         })
 
 
+        //EDITABLE OBSERVERS
+        binding.editName.addTextChangedListener(mealEditorViewModel.nameTextWatcher)
+        binding.editNotes.addTextChangedListener(mealEditorViewModel.notesTextWatcher)
+        binding.imageURI.addTextChangedListener(mealEditorViewModel.imageTextWatcher)
 
         binding.mealEditorViewModel = mealEditorViewModel
         binding.lifecycleOwner = this
 
 
-
-
-        mealEditorViewModel.onAddResourcesClick.observe(viewLifecycleOwner, Observer {
-            if (it == true) {
-                view?.context?.let { it -> addResource(it) }
-
-            }
-        })
-
-        mealEditorViewModel.onResourceAdded.observe(viewLifecycleOwner, Observer {
-            if(it==true) {
-                Log.d("onresourceadded","triggered")
-                Log.d("url in oncreate",urlfromuser)
-                val urlstringoncreate = arguments?.getString(ARG_NAME)
-                urlstringoncreate?.let {
-                    Log.d("url in oncreate",urlstringoncreate)
-                }
-            }
-        })
-
-
         return binding.root
     }
-
+/*
     override fun onResume() {
         super.onResume()
-        val viewModelFactory = MealEditorViewModelFactory()
-        val mealEditorViewModel = viewModelFactory.create(MealEditorViewModel::class.java)
         val urlstring = arguments?.getString(ARG_NAME)
-
+        var listOfResources = mutableListOf<Resource>()
+        if (mealEditorViewModel.resources.isNotEmpty()) {
+                listOfResources = mealEditorViewModel.resources
+            }
         urlstring?.let {
-            Log.d("url in onresume",urlstring)
-            mealEditorViewModel.addNewResource(urlstring)
+            mealEditorViewModel.addNewResource(it)
+            listOfResources.add(Resource(resourceURL = it))
+            mealEditorViewModel.adapter.submitList(listOfResources)
+            mealEditorViewModel.adapter.notifyItemInserted(listOfResources.size -1)
+            Log.d("ORresourceUri",listOfResources.toString())
         }
 
     }
-
+*/
 
     private fun createDeleteDialog(viewModel:MealEditorViewModel): AlertDialog {
         lateinit var alertDialog: AlertDialog
@@ -157,6 +134,7 @@ class MealEditorFragment: Fragment() {
             MealEditorFragmentDirections.actionRecipeEditorFragmentToRecipeListFragment()
         view?.findNavController()?.navigate(action)
     }
+
     private fun navToMeal(name:String) {
         val action =
             MealEditorFragmentDirections.actionRecipeEditorFragmentToRecipeFragment()
@@ -177,8 +155,8 @@ class MealEditorFragment: Fragment() {
             context?.startActivity(onReceiveIntent)
         }
     }
-
-    private fun addResource(context: Context) {
+/*
+    private fun launchCustomTab(context: Context) {
         val bitmap = BitmapFactory.decodeResource(context.resources,
             R.drawable.common_full_open_on_phone
         )
@@ -212,6 +190,6 @@ class MealEditorFragment: Fragment() {
             return fragment
         }
     }
-
+*/
 
 }

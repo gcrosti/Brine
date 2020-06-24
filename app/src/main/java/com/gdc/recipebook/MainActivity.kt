@@ -1,12 +1,7 @@
 package com.gdc.recipebook
 
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.Navigation
-import com.gdc.recipebook.screens.mealeditor.MealEditorFragment
-import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -15,6 +10,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
     }
 
+    /*
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         if (intent != null) {
@@ -22,5 +18,5 @@ class MainActivity : AppCompatActivity() {
             val fragment = newResourceUri?.let { MealEditorFragment.newInstance(it) }
             fragment?.onResume()
         }
-    }
+    } */
 }

@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.gdc.recipebook.database.dataclasses.MealWithFunctions
 
-class MealListAdapter():
+class MealListAdapter(val clickListener: MealListListener):
     ListAdapter<MealWithFunctions,MealListItemView>(MealListDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MealListItemView {
@@ -14,7 +14,7 @@ class MealListAdapter():
 
     override fun onBindViewHolder(holder: MealListItemView, position: Int) {
         val item = getItem(position)
-        holder.bind(item)
+        holder.bind(item,clickListener)
     }
 }
 
@@ -30,4 +30,8 @@ class MealListDiffCallback: DiffUtil.ItemCallback<MealWithFunctions>() {
         }
         return false
     }
+}
+
+class MealListListener(val clickListener: (mealName: String) -> Unit) {
+    fun onClick(mealWithFunctions: MealWithFunctions) = clickListener(mealWithFunctions.meal.name)
 }

@@ -13,9 +13,12 @@ import com.gdc.recipebook.databinding.ViewMealListItemBinding
 class MealListItemView(private val binding: ViewMealListItemBinding):
     RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(mealWithFunctions: MealWithFunctions) {
+    fun bind(
+        mealWithFunctions: MealWithFunctions,
+        clickListener: MealListListener
+    ) {
+        binding.clickListener = clickListener
         binding.mealWithFunctions = mealWithFunctions
-        Log.d("meal functions", mealWithFunctions.toString())
         binding.executePendingBindings()
     }
 

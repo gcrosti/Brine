@@ -1,16 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="mealViewModel"
+            type="com.gdc.recipebook.screens.meal.MealViewModel" />
+    </data>
+
+
+<androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:textAlignment="center">
+
 
     <TextView
         android:id="@+id/recipeTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/defaultMargin"
-        android:text="@string/mealTitle"
+        android:text="@{mealViewModel.thisMeal.name}"
         android:textSize="@dimen/fragmentTitleTextSize"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -19,39 +29,36 @@
     <ImageView
         android:id="@+id/recipeImage"
         android:layout_width="0dp"
-        android:layout_height="400dp"
-        app:layout_constraintBottom_toTopOf="@+id/recipeFunction"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recipeTitle"
-        app:srcCompat="@android:drawable/btn_star_big_on" />
+        app:layout_constraintTop_toBottomOf="@+id/recipeTitle" />
 
     <TextView
         android:id="@+id/recipeFunction"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/defaultMargin"
-        android:layout_marginBottom="132dp"
         android:text="@string/mealFunction"
         android:textAlignment="center"
         android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/recipeNotes"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recipeImage"
+        app:mealFunctionsFormatted="@{mealViewModel.functions}" />
 
     <TextView
         android:id="@+id/recipeNotes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/defaultMargin"
-        android:layout_marginBottom="152dp"
         android:autoLink="web"
-        android:text="@string/mealResources"
+        android:text="@{mealViewModel.thisMeal.notes}"
         android:textAlignment="textStart"
-        app:layout_constraintBottom_toTopOf="@+id/fabEditRecipe"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recipeFunction" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabEditRecipe"
@@ -70,3 +77,4 @@
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

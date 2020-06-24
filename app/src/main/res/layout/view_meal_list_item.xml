@@ -6,6 +6,9 @@
         <variable
             name="mealWithFunctions"
             type="com.gdc.recipebook.database.dataclasses.MealWithFunctions" />
+        <variable
+            name="clickListener"
+            type = "com.gdc.recipebook.screens.meallist.MealListListener"/>
 
     </data>
     <LinearLayout
@@ -13,7 +16,8 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp"
-        android:layout_gravity="center_horizontal">
+        android:layout_gravity="center_horizontal"
+        android:onClick="@{() -> clickListener.onClick(mealWithFunctions)}">
 
         <TextView
             android:id="@+id/recipeName"
@@ -24,7 +28,7 @@
 
     <TextView
         android:id="@+id/recipeFunction"
-        app:mealFunctionsFormatted="@{mealWithFunctions}"
+        app:mealFunctionsFormatted="@{mealWithFunctions.mealFunctions}"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text=""

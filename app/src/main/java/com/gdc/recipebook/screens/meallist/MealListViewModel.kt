@@ -44,9 +44,7 @@ class MealListViewModel(dataSource: RoomDatabaseDAO, application: Application): 
 
     private fun getAllMeals() {
         uiScope.launch {
-            _mealsWithFunctions.value = mealRepository.getAllMealsFromDatabase()
-            val size = _mealsWithFunctions.value!!.size
-            Log.d("meals database size:",size.toString())
+            _mealsWithFunctions.value = mealRepository.getAllMealsWithFunctionsFromDatabase()
         }
     }
 
@@ -55,6 +53,8 @@ class MealListViewModel(dataSource: RoomDatabaseDAO, application: Application): 
         viewModelJob.cancel()
     }
 
+}
 
+class WelcomeViewModel(): ViewModel() {
 
 }

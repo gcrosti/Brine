@@ -8,6 +8,8 @@
         <variable
             name="mealListViewModel"
             type="com.gdc.recipebook.screens.meallist.MealListViewModel" />
+
+
     </data>
 
 <androidx.constraintlayout.widget.ConstraintLayout

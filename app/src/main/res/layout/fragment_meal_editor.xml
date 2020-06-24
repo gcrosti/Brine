@@ -29,7 +29,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:autofillHints=""
-            android:text="@{mealEditorViewModel.meal.name}"
+            android:text="@{mealEditorViewModel.mealName}"
         />
 
         <TextView
@@ -136,7 +136,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:autofillHints=""
             android:ems="10"
@@ -144,10 +143,10 @@
             android:hint="@string/mealResources"
             android:inputType="textMultiLine"
             android:lines="@integer/notesLines"
+            android:text="@{mealEditorViewModel.mealNotes}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/resourcesRecyclerView"
-            android:text="@{mealEditorViewModel.meal.notes}"/>
+            app:layout_constraintTop_toBottomOf="@+id/imageURI" />
 
         <Button
             android:id="@+id/saveRecipeButton"
@@ -194,8 +193,9 @@
             app:layout_constraintEnd_toStartOf="@+id/imageButton"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/dessertCheck"
-            android:text="@{mealEditorViewModel.imageURI}"/>
+            android:text="@{mealEditorViewModel.imageURL}"/>
 
+<!--
         <Button
             android:id="@+id/addResourceButton"
             android:layout_width="match_parent"
@@ -216,7 +216,9 @@
             app:layout_constraintBottom_toTopOf="@id/editNotes"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/addResourceButton" />
+            app:layout_constraintTop_toBottomOf="@+id/addResourceButton"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+            -->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

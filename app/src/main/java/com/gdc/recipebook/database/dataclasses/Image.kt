@@ -11,7 +11,7 @@ data class Image(
     var imageId: Long = 0L,
 
     @ColumnInfo(name = "imageMealId")
-    var imageMealId: Long,
+    var imageMealId: Long = 0L,
 
     @ColumnInfo(name = "imageURL")
     var imageURL: String = ""

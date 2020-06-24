@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import com.gdc.recipebook.database.dataclasses.*
 
 
-@Database(entities = [Image::class, Meal::class,MealFunction::class,Resource::class],version = 3,exportSchema = false)
+@Database(entities = [Image::class, Meal::class,MealFunction::class,Resource::class],version = 4,exportSchema = false)
 abstract class MealRoomDatabase: RoomDatabase() {
     abstract val databaseDAO: RoomDatabaseDAO
 

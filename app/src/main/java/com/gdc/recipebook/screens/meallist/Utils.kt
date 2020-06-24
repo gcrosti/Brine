@@ -7,7 +7,6 @@ import com.gdc.recipebook.database.dataclasses.MealFunction
 fun convertListToString(list: List<String>): String {
     val string = list.toString()
     val stringLength = string.length - 2
-    Log.d("stringfromlist",string)
     return string.slice(IntRange(1,stringLength))
 }
 
@@ -21,7 +20,6 @@ fun convertFuncsToNameList(mealFunction: MealFunction): List<String> {
     if(mealFunction.protein) {stringList.add("protein")}
     if(mealFunction.starch) {stringList.add("starch")}
     if(mealFunction.veg) {stringList.add("vegetable")}
-    Log.d("stringList", stringList.toString())
 
     return stringList
 }
