@@ -30,20 +30,3 @@ class MealListItemView(private val binding: ViewMealListItemBinding):
         }
     }
 }
-
-
-
-
-class MealListItemViewModel: ViewModel() {
-
-    private fun navToRecipe(view: View?, name:String) {
-        val action =
-            MealListFragmentDirections.actionRecipeListFragmentToRecipeFragment()
-        action.mealName = name
-        view?.findNavController()?.navigate(action)
-    }
-
-    fun onMealClick(v: View, mealName: String) {
-        navToRecipe(v,mealName)
-    }
-}

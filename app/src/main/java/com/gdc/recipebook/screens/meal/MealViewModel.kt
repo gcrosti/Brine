@@ -1,8 +1,10 @@
 package com.gdc.recipebook.screens.meal
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.gdc.recipebook.R
 import com.gdc.recipebook.database.Repository
 import com.gdc.recipebook.database.RoomDatabaseDAO
 import com.gdc.recipebook.database.dataclasses.Image
@@ -34,7 +36,7 @@ class MealViewModel: ViewModel() {
     private var mealWithRelations: MealWithRelations? = null
 
     //PUBLIC DATA FOR DISPLAY
-    val thisMeal = MutableLiveData<Meal>(mealWithRelations?.meal)
+    val thisMeal = MutableLiveData(Meal(mealId = 0L, name = mealName))
     val mealImage = MutableLiveData<Image?>(mealWithRelations?.images?.get(0))
     val functions = MutableLiveData<MealFunction>(mealWithRelations?.functions)
 
@@ -45,10 +47,35 @@ class MealViewModel: ViewModel() {
             mealWithRelations = mealRepository.retrieveMealWithRelations(mealName)
             Log.d("retrieved data",mealWithRelations.toString())
             thisMeal.value = mealWithRelations!!.meal
-            mealImage.value = mealWithRelations!!.images?.get(0)
+            mealImage.value = mealWithRelations!!.images?.get(mealWithRelations!!.images!!.lastIndex)
             functions.value = mealWithRelations!!.functions
+
+            if (thisMeal.value!!.notes.isBlank()) {
+                thisMeal.value!!.notes = defaultNotes
+            }
         }
     }
 
+
+    //EDIT MEAL LISTENER
+    private var _onEditMealClick = MutableLiveData(false)
+    val onEditMealClick: LiveData<Boolean>
+        get() = _onEditMealClick
+    fun onEditMealClick() {
+        _onEditMealClick.value = true
+        Log.d("edit meal", "clicked")
+    }
+
+    fun onNavigatingToEditMeal () {
+        _onEditMealClick.value = false
+    }
+
+    //DEFAULT NOTES TEXT
+    private val defaultNotes = "This meal has no notes."
+
+    override fun onCleared() {
+        super.onCleared()
+        viewModelJob.cancel()
+    }
 
 }

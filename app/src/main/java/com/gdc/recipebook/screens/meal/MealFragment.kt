@@ -1,6 +1,7 @@
 package com.gdc.recipebook.screens.meal
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,6 +46,7 @@ class MealFragment: Fragment() {
         arguments?.let {
             nameFromArg = MealFragmentArgs.fromBundle(it).mealName
             mealViewModel.setNameFromArg(nameFromArg)
+            Log.d("name in meal view", nameFromArg)
         }
 
         //IMAGE OBSERVER
@@ -54,40 +56,23 @@ class MealFragment: Fragment() {
             }
         })
 
+        //EDIT MEAL OBSERVER
+        mealViewModel.onEditMealClick.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                mealViewModel.thisMeal.value?.name?.let { it1 -> navToEditor(it1) }
+                mealViewModel.onNavigatingToEditMeal()
+            }
+        })
+
         return binding.root
     }
-
-    /*override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        lateinit var args: MealFragmentArgs
-        val listDataManager =
-            SharedPrefsDataManager(view.context)
-        arguments?.let {
-            args = MealFragmentArgs.fromBundle(it)
-        }
-        recipeTitle.text = args.mealName
-        val meal = listDataManager.readMeal(listDataManager.readList(),args.mealName)!!
-        val funcNames = if (meal.function.isNotEmpty())
-        {meal.function.substring(1,meal.function.length-1)} else {""}
-        recipeFunction.text = funcNames
-        recipeNotes.text = meal.notes
-        if (!meal.imageURI.isNullOrEmpty()) {
-            displayImage(meal.imageURI)
-            Log.d("Glide image uri for ${meal.name}", meal.imageURI)
-        } else {recipeImage.visibility = View.GONE}
-
-        fabEditRecipe.setOnClickListener {
-            navToEditor(meal.name)
-        }
-    }*/
-
-
 
     private fun navToEditor(name:String) {
         val action =
             MealFragmentDirections.actionRecipeFragmentToRecipeEditorFragment()
         action.mealName = name
         view?.findNavController()?.navigate(action)
+        Log.d("navfrommeal", "to editor")
     }
 
     private fun navToMealList() {

@@ -1,7 +1,5 @@
-package com.gdc.recipebook.screens.meallist
+package com.gdc.recipebook.screens.welcome
 
-import android.app.Application
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -13,36 +11,33 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class MealListViewModel(dataSource: RoomDatabaseDAO, application: Application): ViewModel() {
-
+class WelcomeViewModel(dataSource: RoomDatabaseDAO): ViewModel() {
 
     val database = dataSource
-
     private val viewModelJob = Job()
-
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
-
     private val mealRepository = Repository(database)
+
+    init {
+        getAllMeals()
+    }
 
     private var _mealsWithFunctions = MutableLiveData<MutableList<MealWithFunctions>?>()
     val mealsWithFunctions: MutableLiveData<MutableList<MealWithFunctions>?>
         get() = _mealsWithFunctions
 
-
-    private var _showNewMealDialog = MutableLiveData(false)
-
-    val showNewMealDialog: LiveData<Boolean>
-        get() = _showNewMealDialog
-
-
-    fun onNewMealClick() {
-        _showNewMealDialog.value = true
-    }
-
-    fun getAllMeals() {
+    private fun getAllMeals() {
         uiScope.launch {
             _mealsWithFunctions.value = mealRepository.getAllMealsWithFunctionsFromDatabase()
         }
+    }
+
+    private var _onNewMealClick = MutableLiveData(false)
+    val onNewMealClick: LiveData<Boolean>
+        get() = _onNewMealClick
+
+    fun onNewMealClick() {
+        _onNewMealClick.value = true
     }
 
     override fun onCleared() {
@@ -51,3 +46,4 @@ class MealListViewModel(dataSource: RoomDatabaseDAO, application: Application): 
     }
 
 }
+

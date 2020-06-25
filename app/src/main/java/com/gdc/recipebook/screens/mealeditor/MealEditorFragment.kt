@@ -1,19 +1,16 @@
 package com.gdc.recipebook.screens.mealeditor
 
 import android.app.AlertDialog
-import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.browser.customtabs.CustomTabsIntent
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -21,7 +18,6 @@ import androidx.navigation.findNavController
 import com.gdc.recipebook.MainActivity
 import com.gdc.recipebook.R
 import com.gdc.recipebook.database.MealRoomDatabase
-import com.gdc.recipebook.database.dataclasses.Resource
 import com.gdc.recipebook.databinding.FragmentMealEditorBinding
 
 
@@ -54,7 +50,7 @@ class MealEditorFragment: Fragment() {
         }
 
         mealEditorViewModel.setDatabase(dataSource)
-        mealEditorViewModel.createNewMealId()
+        mealEditorViewModel.setMealId()
 
 
         //BUTTON CLICK HANDLERS
@@ -71,7 +67,7 @@ class MealEditorFragment: Fragment() {
         mealEditorViewModel.onSaveMealClick.observe(viewLifecycleOwner,  Observer {
             if (it == true) {
                 mealEditorViewModel.onSave()
-                navToList()
+                navToMeal(mealEditorViewModel.mealName)
             }
         })
 

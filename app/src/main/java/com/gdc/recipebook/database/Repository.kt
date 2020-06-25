@@ -1,5 +1,6 @@
 package com.gdc.recipebook.database
 
+import android.util.Log
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -9,10 +10,19 @@ import kotlinx.coroutines.withContext
 
 class Repository(private val mealsDatabase: RoomDatabaseDAO) {
 
-    suspend fun setMealId(name: String): Long {
+    suspend fun setMealId(name: String): Pair<Long,Boolean> {
         return withContext(Dispatchers.IO) {
-            val meal = Meal(name = name)
-            mealsDatabase.insertMeal(meal)
+            var isNew = false
+            val mealId: Long
+            var meal = mealsDatabase.getMealFromName(name)
+            if (meal == null) {
+                isNew = true
+                meal = Meal(name = name)
+                mealId = mealsDatabase.insertMeal(meal)
+            } else {
+                mealId = meal.mealId
+            }
+            Pair(mealId,isNew)
         }
     }
 

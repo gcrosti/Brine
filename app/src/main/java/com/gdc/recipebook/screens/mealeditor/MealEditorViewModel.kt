@@ -3,13 +3,10 @@ package com.gdc.recipebook.screens.mealeditor
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import androidx.databinding.Bindable
 import androidx.lifecycle.*
 import com.gdc.recipebook.database.Repository
 import com.gdc.recipebook.database.RoomDatabaseDAO
 import com.gdc.recipebook.database.dataclasses.*
-import com.gdc.recipebook.screens.mealeditor.resources.ResourceListAdapter
-import com.gdc.recipebook.screens.mealeditor.resources.ResourceListListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -30,14 +27,28 @@ class MealEditorViewModel(): ViewModel() {
         mealRepository = Repository(dataSource)
     }
 
-    //CREATE A NEW MEALID FOR THIS MEAL
-    private var newMealId = 0L
-    public var test = ""
+    //CREATE A NEW MEALID OR FIND EXISTING DATA FOR THIS MEAL
+    private var mealId = 0L
+    private var isNew = false
+    private var mealWithRelations: MealWithRelations? = null
 
-    fun createNewMealId() {
+    fun setMealId() {
         uiScope.launch {
-            newMealId = mealRepository.setMealId(mealName) }
+            val result = mealRepository.setMealId(mealName)
+            Log.d("meal editor uiscope","running")
+            mealId = result.first
+            isNew = result.second
+            if (!isNew) {
+                mealWithRelations = mealRepository.retrieveMealWithRelations(mealName)
+                Log.d("meal editor data retrieved", mealWithRelations.toString())
+                mealNotes = mealWithRelations!!.meal.notes
+                _mealFunctions.value = mealWithRelations!!.functions
+                mealWithRelations!!.images?.let {
+                    imageURL.value = it[it.lastIndex].imageURL
+                }
             }
+        }
+    }
 
     //MEAL NAME LOGIC
     var mealName = ""
@@ -57,17 +68,20 @@ class MealEditorViewModel(): ViewModel() {
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             mealNotes = s.toString() } }
 
-    //MEAL LOGIC
-    var thisMeal: Meal? = null
 
     //IMAGE LOGIC
     var imageURL = MutableLiveData("")
+    private var onImageChanged = false
 
     val imageTextWatcher = object: TextWatcher {
         override fun afterTextChanged(s: Editable?) {}
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            imageURL.value = s.toString() } }
+            imageURL.value = s.toString()
+            Log.d("image being changed", imageURL.value!!)
+            onImageChanged = true
+        }
+    }
 
 
     private var _onNewImageClick = MutableLiveData(false)
@@ -121,23 +135,26 @@ class MealEditorViewModel(): ViewModel() {
 
     fun onSave() {
         uiScope.launch {
-            if (thisMeal == null) {
-                thisMeal = Meal(
-                    mealId = newMealId,
+
+                val thisMeal = Meal(
+                    mealId = mealId,
                     name = mealName,
-                    notes = mealNotes)
+                    notes = mealNotes
+                )
                 Log.d("meal to be saved",thisMeal.toString())
-            }
-            val newImages = mutableListOf<Image>()
+
+            var newImages: MutableList<Image>? = null
 
             imageURL.value?.let {
-                if (it.isNotBlank()) {
-                    val newImage = Image(imageURL = it, imageMealId = newMealId)
-                    newImages.add(newImage)
+                if (onImageChanged) {
+                    val newImage = Image(imageURL = it, imageMealId = mealId)
+                    newImages = mutableListOf()
+                    newImages!!.add(newImage)
+                    Log.d("images to be saved",newImages.toString())
                 }
             }
 
-            _mealFunctions.value?.functionMealId = newMealId
+            _mealFunctions.value?.functionMealId = mealId
 
             mealRepository.saveMealWithRelations(
                 meal = thisMeal,
@@ -167,16 +184,16 @@ class MealEditorViewModel(): ViewModel() {
         uiScope.launch {
 
             mealRepository.deleteMealWithRelations(
-                meal = thisMeal,
-                functions = mealFunctions.value,
-                images = newImages)
+                meal = mealWithRelations?.meal,
+                functions = mealWithRelations?.functions,
+                images = mealWithRelations?.images)
         }
     }
 
     //MEAL FUNCTIONS LOGIC
     private var _mealFunctions = MutableLiveData(MealFunction(functionMealId = 0))
 
-    val mealFunctions: LiveData<MealFunction>
+    val mealFunctions: MutableLiveData<MealFunction>
         get() = _mealFunctions
 
     fun onStarchClick() {

@@ -3,9 +3,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_navigation"
-    app:startDestination="@id/recipeListFragment">
+    app:startDestination="@id/welcomeFragment">
 
 
+    <fragment
+        android:id="@+id/welcomeFragment"
+        android:name="com.gdc.recipebook.screens.welcome.WelcomeFragment"
+        android:label="WelcomeFragment" >
+        <action
+            android:id="@+id/action_welcomeFragment_to_recipeListFragment"
+            app:destination="@id/recipeListFragment" />
+        <action
+            android:id="@+id/action_welcomeFragment_to_recipeEditorFragment"
+            app:destination="@id/recipeEditorFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/recipeListFragment"
@@ -49,4 +60,5 @@
             android:id="@+id/action_recipeEditorFragment_to_recipeListFragment"
             app:destination="@id/recipeListFragment" />
     </fragment>
+
 </navigation>
