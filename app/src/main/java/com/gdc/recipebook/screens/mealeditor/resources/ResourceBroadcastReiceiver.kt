@@ -10,19 +10,15 @@ import com.gdc.recipebook.MainActivity
 import com.gdc.recipebook.screens.mealeditor.MealEditorFragment
 import com.gdc.recipebook.screens.meallist.MealListFragmentDirections
 
-/*
-class MyBroadcastReceiver(private val resultCatcher: MutableLiveData<String>): ResourceBroadcastReceiver() {
+class ResourceBroadcastReceiver(): BroadcastReceiver() {
+    val KEY_ACTION_SOURCE = "brineactiontaken"
     override fun onReceive(context: Context?, intent: Intent?) {
-        super.onReceive(context, intent)
+        val uriText = intent?.data.toString()
+        Log.d(KEY_ACTION_SOURCE,uriText)
         val onReceiveIntent = Intent(context, MainActivity::class.java)
         onReceiveIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         onReceiveIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        onReceiveIntent.putExtra(Intent.EXTRA_TEXT,uriText)
         context?.startActivity(onReceiveIntent)
-        if (intent != null) {
-            resultCatcher.value = intent.data.toString()
-            Log.d("result caught",resultCatcher.value)
-        }
     }
-} */
-
-
+}

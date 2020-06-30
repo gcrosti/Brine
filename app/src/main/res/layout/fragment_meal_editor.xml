@@ -7,7 +7,7 @@
     <data>
         <variable
             name="mealEditorViewModel"
-            type="com.gdc.recipebook.screens.mealeditor.MealEditorViewModel" />
+            type="com.gdc.recipebook.screens.mealeditor.viewModel.MealEditorViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -146,7 +146,7 @@
             android:text="@{mealEditorViewModel.mealNotes}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageURI" />
+            app:layout_constraintTop_toBottomOf="@+id/resourcesRecyclerView" />
 
         <Button
             android:id="@+id/saveRecipeButton"
@@ -195,7 +195,7 @@
             app:layout_constraintTop_toBottomOf="@+id/dessertCheck"
             android:text="@{mealEditorViewModel.imageURL}"/>
 
-<!--
+
         <Button
             android:id="@+id/addResourceButton"
             android:layout_width="match_parent"
@@ -218,7 +218,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/addResourceButton"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
-            -->
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

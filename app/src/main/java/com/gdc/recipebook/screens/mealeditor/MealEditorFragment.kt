@@ -1,16 +1,19 @@
 package com.gdc.recipebook.screens.mealeditor
 
 import android.app.AlertDialog
+import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -19,12 +22,20 @@ import com.gdc.recipebook.MainActivity
 import com.gdc.recipebook.R
 import com.gdc.recipebook.database.MealRoomDatabase
 import com.gdc.recipebook.databinding.FragmentMealEditorBinding
+import com.gdc.recipebook.screens.mealeditor.resources.ResourceBroadcastReceiver
+import com.gdc.recipebook.screens.mealeditor.resources.ResourceListAdapter
+import com.gdc.recipebook.screens.mealeditor.resources.ResourceListListener
+import com.gdc.recipebook.screens.mealeditor.utils.EditorLifecycleObserver
+import com.gdc.recipebook.screens.mealeditor.utils.PhotoActivityResultContract
+import com.gdc.recipebook.screens.mealeditor.viewModel.MealEditorViewModel
+import com.gdc.recipebook.screens.mealeditor.viewModel.MealEditorViewModelFactory
 
 
 class MealEditorFragment: Fragment() {
 
     //CREATE VIEWMODEL AND SET OBJECT RELATIONS
-    val viewModelFactory = MealEditorViewModelFactory()
+    val viewModelFactory =
+        MealEditorViewModelFactory()
     val mealEditorViewModel = viewModelFactory.create(MealEditorViewModel::class.java)
 
     override fun onCreateView(
@@ -78,6 +89,12 @@ class MealEditorFragment: Fragment() {
             }
         })
 
+        mealEditorViewModel.onAddResourcesClick.observe(viewLifecycleOwner, Observer {
+            if (it == true) {
+                context?.let { context -> launchCustomTab(context) }
+            }
+        })
+
 
         //EDITABLE OBSERVERS
         binding.editName.addTextChangedListener(mealEditorViewModel.nameTextWatcher)
@@ -87,29 +104,40 @@ class MealEditorFragment: Fragment() {
         binding.mealEditorViewModel = mealEditorViewModel
         binding.lifecycleOwner = this
 
+        //RESOURCES LOGIC
+        Log.d("adapter creation", "happening now")
+        val adapter = ResourceListAdapter(ResourceListListener { resource -> mealEditorViewModel.removeResource(resource) })
+        binding.resourcesRecyclerView.adapter = adapter
+
+        val getUrlFromIntent: () -> Unit = {
+            val urlString = activity?.intent?.extras?.getString(Intent.EXTRA_TEXT)
+            urlString?.let {
+                mealEditorViewModel.addNewResource(it)
+                adapter.notifyDataSetChanged()
+            }
+        }
+
+        activity?.lifecycle?.let {
+            val lifecycleObserver = EditorLifecycleObserver(it,getUrlFromIntent)
+            it.addObserver(lifecycleObserver)
+        }
+
+
+
+        mealEditorViewModel.resources.observe(viewLifecycleOwner, Observer {
+            it.toString()
+            it?.let {
+                Log.d("list submitted",it.toString())
+                adapter.submitList(it)
+            }
+        })
+
 
         return binding.root
     }
-/*
-    override fun onResume() {
-        super.onResume()
-        val urlstring = arguments?.getString(ARG_NAME)
-        var listOfResources = mutableListOf<Resource>()
-        if (mealEditorViewModel.resources.isNotEmpty()) {
-                listOfResources = mealEditorViewModel.resources
-            }
-        urlstring?.let {
-            mealEditorViewModel.addNewResource(it)
-            listOfResources.add(Resource(resourceURL = it))
-            mealEditorViewModel.adapter.submitList(listOfResources)
-            mealEditorViewModel.adapter.notifyItemInserted(listOfResources.size -1)
-            Log.d("ORresourceUri",listOfResources.toString())
-        }
 
-    }
-*/
 
-    private fun createDeleteDialog(viewModel:MealEditorViewModel): AlertDialog {
+    private fun createDeleteDialog(viewModel: MealEditorViewModel): AlertDialog {
         lateinit var alertDialog: AlertDialog
         activity?.let {
             val alertDialogBuilder = AlertDialog.Builder(it)
@@ -138,20 +166,8 @@ class MealEditorFragment: Fragment() {
         view?.findNavController()?.navigate(action)
     }
 
-    class ResourceBroadcastReceiver(): BroadcastReceiver() {
 
-        val KEY_ACTION_SOURCE = "brineactiontaken"
-        override fun onReceive(context: Context?, intent: Intent?) {
-            val uriText = intent?.data.toString()
-            Log.d(KEY_ACTION_SOURCE,uriText)
-            val onReceiveIntent = Intent(context, MainActivity::class.java)
-            onReceiveIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            onReceiveIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            onReceiveIntent.putExtra(Intent.EXTRA_TEXT,uriText)
-            context?.startActivity(onReceiveIntent)
-        }
-    }
-/*
+
     private fun launchCustomTab(context: Context) {
         val bitmap = BitmapFactory.decodeResource(context.resources,
             R.drawable.common_full_open_on_phone
@@ -161,7 +177,7 @@ class MealEditorFragment: Fragment() {
         val intentBuilder = CustomTabsIntent.Builder()
         intentBuilder.addMenuItem("callback",pendingIntent)
         intentBuilder.setActionButton(bitmap,"callback",pendingIntent,true)
-        context?.let { it ->
+        context.let { it ->
             val customTabsIntent = intentBuilder.build()
             customTabsIntent.intent.setPackage("com.android.chrome")
             customTabsIntent.launchUrl(it,uri)}
@@ -172,20 +188,4 @@ class MealEditorFragment: Fragment() {
         val intent = Intent(context,resourceBroadcastReceiver::class.java)
         return PendingIntent.getBroadcast(context,0,intent,PendingIntent.FLAG_ONE_SHOT)
     }
-
-
-    companion object {
-        const val ARG_NAME = "newResourceUrl"
-
-        fun newInstance(name:String): MealEditorFragment {
-            val fragment = MealEditorFragment()
-            val bundle = Bundle().apply {
-                putString(ARG_NAME,name)
-            }
-            fragment.arguments = bundle
-            return fragment
-        }
-    }
-*/
-
 }

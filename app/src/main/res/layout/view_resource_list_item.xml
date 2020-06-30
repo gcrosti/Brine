@@ -23,9 +23,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:maxWidth="310dp"
-        android:text="@string/testURL"
-        android:autoLink="web" />
+        android:maxWidth="250dp"
+        android:text="@{resource.resourceURL}"/>
 
     <Button
         android:id="@+id/deleteResource"
