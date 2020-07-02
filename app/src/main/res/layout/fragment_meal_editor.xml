@@ -10,10 +10,16 @@
             type="com.gdc.recipebook.screens.mealeditor.viewModel.MealEditorViewModel" />
     </data>
 
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".screens.mealeditor.MealEditorFragment">
+        android:layout_height="wrap_content"
+        tools:context=".screens.mealeditor.MealEditorFragment"
+        android:padding="16dp">
 
         <EditText
             android:id="@+id/editName"
@@ -217,8 +223,10 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/addResourceButton"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            editorListData="@{mealEditorViewModel.resources}"/>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 </layout>

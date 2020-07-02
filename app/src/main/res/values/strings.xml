@@ -28,4 +28,5 @@
     <string name="delete">Delete</string>
     <string name="testURL">https://www.gimmesomeoven.com/homemade-pasta/</string>
     <string name="defaultNotes">This meal has no notes.</string>
+    <string name="remove">Remove</string>
 </resources>

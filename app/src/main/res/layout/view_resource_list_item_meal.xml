@@ -5,17 +5,13 @@
         <variable
             name="resource"
             type="com.gdc.recipebook.database.dataclasses.Resource" />
-        <variable
-            name="clickListener"
-            type = "com.gdc.recipebook.screens.mealeditor.resources.ResourceListListener"/>
-
     </data>
 
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="4dp"
+    android:padding="16dp"
     android:layout_gravity="center_horizontal">
 
     <TextView
@@ -24,17 +20,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:maxWidth="250dp"
-        android:text="@{resource.resourceURL}"/>
+        android:text="@{resource.resourceURL}"
+        android:autoLink="web"/>
 
-    <Button
-        android:id="@+id/deleteResource"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:background="#0003DAC5"
-        android:onClick="@{() -> clickListener.onClick(resource)}"
-        android:text="@string/remove"
-        android:textAlignment="textEnd"
-        android:textColor="@color/ic_launcher_background" />
 </LinearLayout>
 </layout>

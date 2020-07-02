@@ -46,7 +46,6 @@ class MealFragment: Fragment() {
         arguments?.let {
             nameFromArg = MealFragmentArgs.fromBundle(it).mealName
             mealViewModel.setNameFromArg(nameFromArg)
-            Log.d("name in meal view", nameFromArg)
         }
 
         //IMAGE OBSERVER
@@ -55,6 +54,9 @@ class MealFragment: Fragment() {
                 displayImage(it.imageURL)
             }
         })
+
+        //BIND ADAPTER
+        binding.resourcesMealRecyclerView.adapter = mealViewModel.adapter
 
         //EDIT MEAL OBSERVER
         mealViewModel.onEditMealClick.observe(viewLifecycleOwner, Observer {

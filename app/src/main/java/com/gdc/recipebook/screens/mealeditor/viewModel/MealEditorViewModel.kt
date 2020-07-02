@@ -2,7 +2,6 @@ package com.gdc.recipebook.screens.mealeditor.viewModel
 
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import androidx.lifecycle.*
 import com.gdc.recipebook.database.Repository
 import com.gdc.recipebook.database.RoomDatabaseDAO
@@ -35,19 +34,26 @@ class MealEditorViewModel(): ViewModel() {
     private var isNew = false
     private var mealWithRelations: MealWithRelations? = null
 
+
     fun setMealId() {
         uiScope.launch {
             val result = mealRepository.setMealId(mealName)
-            Log.d("meal editor uiscope","running")
             mealId = result.first
             isNew = result.second
             if (!isNew) {
                 mealWithRelations = mealRepository.retrieveMealWithRelations(mealName)
-                Log.d("mealeditor retrieved", mealWithRelations.toString())
                 mealNotes.value = mealWithRelations!!.meal.notes
                 _mealFunctions.value = mealWithRelations!!.functions
+
                 mealWithRelations!!.images?.let {
                     imageURL.value = it[it.lastIndex].imageURL
+                }
+
+                mealWithRelations!!.resources?.let {
+                    _resources.value = it
+
+                    // Remember resources originally loaded to correctly remove if necessary
+                    setLoadedResources(it)
                 }
             }
         }
@@ -81,7 +87,6 @@ class MealEditorViewModel(): ViewModel() {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             imageURL.value = s.toString()
-            Log.d("image being changed", imageURL.value!!)
             onImageChanged = true
         }
     }
@@ -106,9 +111,13 @@ class MealEditorViewModel(): ViewModel() {
     val onAddResourcesClick: LiveData<Boolean>
         get() = _onAddResourcesClick
 
+    private var onResourcesChanged = false
+
+
+    val adapter = ResourceListAdapter(ResourceListListener { resource -> removeResource(resource) })
 
     private var _resources = MutableLiveData(mutableListOf<Resource>())
-    val resources
+    val resources: LiveData<MutableList<Resource>>
             get() = _resources
 
     fun onAddResourceClick() {
@@ -117,15 +126,24 @@ class MealEditorViewModel(): ViewModel() {
 
     fun addNewResource(uri: String) {
         _resources.value!!.add(Resource(resourceURL = uri))
-        Log.d("url added", resources.value.toString())
+        onResourcesChanged = true
     }
 
-    fun removeResource(resource: Resource) {
-        Log.d("Resources",_resources.value.toString())
-        _resources.value!!.remove(resource)
-        Log.d("Resources post remove", _resources.value.toString())
+    private fun removeResource(resource: Resource) {
+        _resources.value?.remove(resource)
+        adapter.notifyDataSetChanged()
+        onResourcesChanged = true
     }
 
+
+    private var companionLoadedResources: List<String>? = null
+    private fun setLoadedResources(resources: List<Resource>) {
+        val incomingUrls = mutableListOf<String>()
+        for (resource in resources) {
+            incomingUrls.add(resource.resourceURL)
+        }
+        companionLoadedResources = incomingUrls
+    }
 
     //SAVE DATA LOGIC
 
@@ -145,7 +163,6 @@ class MealEditorViewModel(): ViewModel() {
                     name = mealName,
                     notes = mealNotes.value!!
                 )
-                Log.d("meal to be saved",thisMeal.toString())
 
             var newImages: MutableList<Image>? = null
 
@@ -154,17 +171,28 @@ class MealEditorViewModel(): ViewModel() {
                     val newImage = Image(imageURL = it, imageMealId = mealId)
                     newImages = mutableListOf()
                     newImages!!.add(newImage)
-                    Log.d("images to be saved",newImages.toString())
                 }
             }
+
+
+            if (onResourcesChanged) {
+                for (resource in _resources.value!!) {
+                    resource.resourceMealId = mealId
+                }
+            } else {_resources.value = null }
 
             _mealFunctions.value?.functionMealId = mealId
 
             mealRepository.saveMealWithRelations(
                 meal = thisMeal,
                 images = newImages,
-                functions = _mealFunctions.value
+                functions = _mealFunctions.value,
+                loadedResources = companionLoadedResources,
+                savedResources = _resources.value
             )
+
+            onImageChanged = false
+            onResourcesChanged = false
         }
     }
 

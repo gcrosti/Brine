@@ -10,7 +10,8 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:padding="16dp">
 
 
 
@@ -70,7 +71,20 @@
                 android:textAlignment="textStart"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/recipeFunction" />
+                app:layout_constraintTop_toBottomOf="@+id/resourcesMealRecyclerView"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/resourcesMealRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/defaultMargin"
+                app:layout_constraintBottom_toTopOf="@+id/recipeNotes"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/recipeFunction"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                mealListData="@{mealViewModel.resources}"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>

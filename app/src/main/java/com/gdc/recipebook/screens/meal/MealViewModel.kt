@@ -7,10 +7,8 @@ import androidx.lifecycle.ViewModel
 import com.gdc.recipebook.R
 import com.gdc.recipebook.database.Repository
 import com.gdc.recipebook.database.RoomDatabaseDAO
-import com.gdc.recipebook.database.dataclasses.Image
-import com.gdc.recipebook.database.dataclasses.Meal
-import com.gdc.recipebook.database.dataclasses.MealFunction
-import com.gdc.recipebook.database.dataclasses.MealWithRelations
+import com.gdc.recipebook.database.dataclasses.*
+import com.gdc.recipebook.screens.meal.resources.ResourceListAdapterMeal
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -39,16 +37,19 @@ class MealViewModel: ViewModel() {
     val thisMeal = MutableLiveData(Meal(mealId = 0L, name = mealName))
     val mealImage = MutableLiveData<Image?>(mealWithRelations?.images?.get(0))
     val functions = MutableLiveData<MealFunction>(mealWithRelations?.functions)
+    val resources = MutableLiveData<List<Resource>>(mealWithRelations?.resources)
+    val adapter = ResourceListAdapterMeal()
 
 
+    // LOAD DATA
     fun setNameFromArg(name: String) {
         mealName = name
         uiScope.launch {
             mealWithRelations = mealRepository.retrieveMealWithRelations(mealName)
-            Log.d("retrieved data",mealWithRelations.toString())
             thisMeal.value = mealWithRelations!!.meal
             mealImage.value = mealWithRelations!!.images?.get(mealWithRelations!!.images!!.lastIndex)
             functions.value = mealWithRelations!!.functions
+            resources.value = mealWithRelations!!.resources
 
             if (thisMeal.value!!.notes.isBlank()) {
                 thisMeal.value!!.notes = defaultNotes

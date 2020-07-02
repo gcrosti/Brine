@@ -7,6 +7,8 @@ import com.gdc.recipebook.database.dataclasses.*
 @Dao
 interface RoomDatabaseDAO {
 
+    //INSERT
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertMeal(meal:Meal): Long
 
@@ -19,6 +21,9 @@ interface RoomDatabaseDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertImage(image: Image)
 
+
+    // DELETE
+
     @Delete
     fun deleteMeal(meal:Meal)
 
@@ -27,6 +32,12 @@ interface RoomDatabaseDAO {
 
     @Delete
     fun deleteImage(image:Image)
+
+    @Delete
+    fun deleteResource(resource: Resource)
+
+    @Query("DELETE FROM resources_table WHERE resourceURL ==:url")
+    fun deleteFromResourcesWithUrl(url: String)
 
     @Query("DELETE FROM functions_table WHERE functionMealId ==:mealId ")
     fun deleteFunctionsFromId(mealId:Long)
@@ -55,6 +66,9 @@ interface RoomDatabaseDAO {
 
     @Query("SELECT * FROM images_table WHERE imageMealId == :id")
     fun getImagesFromId(id: Long): List<Image>
+
+    @Query("SELECT * FROM resources_table WHERE resourceMealId == :id")
+    fun getResourcesFromId(id:Long): List<Resource>
 
 
 }

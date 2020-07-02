@@ -25,6 +25,7 @@ import com.gdc.recipebook.databinding.FragmentMealEditorBinding
 import com.gdc.recipebook.screens.mealeditor.resources.ResourceBroadcastReceiver
 import com.gdc.recipebook.screens.mealeditor.resources.ResourceListAdapter
 import com.gdc.recipebook.screens.mealeditor.resources.ResourceListListener
+import com.gdc.recipebook.screens.mealeditor.resources.TextToBitmap
 import com.gdc.recipebook.screens.mealeditor.utils.EditorLifecycleObserver
 import com.gdc.recipebook.screens.mealeditor.utils.PhotoActivityResultContract
 import com.gdc.recipebook.screens.mealeditor.viewModel.MealEditorViewModel
@@ -64,6 +65,7 @@ class MealEditorFragment: Fragment() {
         mealEditorViewModel.setMealId()
 
 
+
         //BUTTON CLICK HANDLERS
         mealEditorViewModel.onNewImageClick.observe(viewLifecycleOwner,  Observer {
             if (it == true) {
@@ -77,6 +79,7 @@ class MealEditorFragment: Fragment() {
 
         mealEditorViewModel.onSaveMealClick.observe(viewLifecycleOwner,  Observer {
             if (it == true) {
+
                 mealEditorViewModel.onSave()
                 navToMeal(mealEditorViewModel.mealName)
             }
@@ -104,16 +107,18 @@ class MealEditorFragment: Fragment() {
         binding.mealEditorViewModel = mealEditorViewModel
         binding.lifecycleOwner = this
 
-        //RESOURCES LOGIC
-        Log.d("adapter creation", "happening now")
-        val adapter = ResourceListAdapter(ResourceListListener { resource -> mealEditorViewModel.removeResource(resource) })
-        binding.resourcesRecyclerView.adapter = adapter
 
+
+        //RESOURCES LOGIC
+
+        binding.resourcesRecyclerView.adapter = mealEditorViewModel.adapter
+
+        // Get URL from Intent when activity resumed
         val getUrlFromIntent: () -> Unit = {
             val urlString = activity?.intent?.extras?.getString(Intent.EXTRA_TEXT)
             urlString?.let {
                 mealEditorViewModel.addNewResource(it)
-                adapter.notifyDataSetChanged()
+                mealEditorViewModel.adapter.notifyDataSetChanged()
             }
         }
 
@@ -121,16 +126,6 @@ class MealEditorFragment: Fragment() {
             val lifecycleObserver = EditorLifecycleObserver(it,getUrlFromIntent)
             it.addObserver(lifecycleObserver)
         }
-
-
-
-        mealEditorViewModel.resources.observe(viewLifecycleOwner, Observer {
-            it.toString()
-            it?.let {
-                Log.d("list submitted",it.toString())
-                adapter.submitList(it)
-            }
-        })
 
 
         return binding.root
@@ -169,14 +164,12 @@ class MealEditorFragment: Fragment() {
 
 
     private fun launchCustomTab(context: Context) {
-        val bitmap = BitmapFactory.decodeResource(context.resources,
-            R.drawable.common_full_open_on_phone
-        )
+
+        val textBitmap = TextToBitmap("ADD")
         val pendingIntent = createPendingIntent(context)
         val uri = Uri.parse("https://www.google.com/")
         val intentBuilder = CustomTabsIntent.Builder()
-        intentBuilder.addMenuItem("callback",pendingIntent)
-        intentBuilder.setActionButton(bitmap,"callback",pendingIntent,true)
+        intentBuilder.setActionButton(textBitmap,"callback",pendingIntent,true)
         context.let { it ->
             val customTabsIntent = intentBuilder.build()
             customTabsIntent.intent.setPackage("com.android.chrome")
