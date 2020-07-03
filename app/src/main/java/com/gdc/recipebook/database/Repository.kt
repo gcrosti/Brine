@@ -74,7 +74,6 @@ class Repository(private val mealsDatabase: RoomDatabaseDAO) {
                 }
             }
         }
-        Log.d("deletionlist",deletionsList.toString())
         return deletionsList
     }
 
@@ -121,7 +120,12 @@ class Repository(private val mealsDatabase: RoomDatabaseDAO) {
             val functions = mealsDatabase.getFunctionsFromId(meal.mealId)
             val images = mealsDatabase.getImagesFromId(meal.mealId)
             val resources = mealsDatabase.getResourcesFromId(meal.mealId)
-            val mealWithRelations = MealWithRelations(meal, functions = functions)
+            val mealWithRelations = MealWithRelations(meal)
+
+            functions?.let {
+                mealWithRelations.functions = it
+            }
+
             if (images.isNotEmpty()) {
                 mealWithRelations.images = images as MutableList<Image>
             }

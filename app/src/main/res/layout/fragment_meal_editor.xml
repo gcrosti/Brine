@@ -25,9 +25,6 @@
             android:id="@+id/editName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
             android:ems="10"
             android:hint="@string/mealName"
             android:inputType="textPersonName"
@@ -36,13 +33,14 @@
             app:layout_constraintTop_toTopOf="parent"
             android:autofillHints=""
             android:text="@{mealEditorViewModel.mealName}"
+            android:layout_marginVertical="8dp"
         />
 
         <TextView
             android:id="@+id/functionSectionTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginVertical="8dp"
             android:text="@string/functionTitleNewMeal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -139,10 +137,8 @@
 
         <EditText
             android:id="@+id/editNotes"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
             android:autofillHints=""
             android:ems="10"
             android:gravity="start|top"
@@ -152,7 +148,8 @@
             android:text="@{mealEditorViewModel.mealNotes}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/resourcesRecyclerView" />
+            app:layout_constraintTop_toBottomOf="@+id/resourcesRecyclerView"
+            android:layout_marginVertical="8dp"/>
 
         <Button
             android:id="@+id/saveRecipeButton"
@@ -163,7 +160,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editNotes"
-            app:layout_constraintVertical_bias="0.0"
+            android:layout_marginVertical="8dp"
             android:onClick="@{() -> mealEditorViewModel.onSaveMealClick()}"/>
 
         <Button
@@ -177,54 +174,54 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/saveRecipeButton"
             app:layout_constraintTop_toBottomOf="@+id/editNotes"
-            app:layout_constraintVertical_bias="0.0"
-            android:onClick="@{() -> mealEditorViewModel.onDeleteMealClick()}"/>
+            android:onClick="@{() -> mealEditorViewModel.onDeleteMealClick()}"
+            android:layout_marginVertical="8dp"/>
 
         <Button
             android:id="@+id/imageButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/defaultMargin"
             android:text="@string/pickImage"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/dessertCheck"
-            android:onClick="@{() -> mealEditorViewModel.onNewImageClick()}"/>
+            android:onClick="@{() -> mealEditorViewModel.onNewImageClick()}"
+            android:layout_marginVertical="8dp"/>
 
 
         <EditText
             android:id="@+id/imageURI"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/defaultMargin"
             app:layout_constraintEnd_toStartOf="@+id/imageButton"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/dessertCheck"
-            android:text="@{mealEditorViewModel.imageURL}"/>
+            android:text="@{mealEditorViewModel.imageURL}"
+            android:layout_marginVertical="8dp"/>
 
 
         <Button
             android:id="@+id/addResourceButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/defaultMargin"
             android:text="@string/addResource"
             app:layout_constraintBottom_toTopOf="@+id/resourcesRecyclerView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageURI"
-            android:onClick="@{() -> mealEditorViewModel.onAddResourceClick()}"/>
+            android:onClick="@{() -> mealEditorViewModel.onAddResourceClick()}"
+            android:layout_marginVertical="8dp"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/resourcesRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/defaultMargin"
             app:layout_constraintBottom_toTopOf="@id/editNotes"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/addResourceButton"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            editorListData="@{mealEditorViewModel.resources}"/>
+            editorListData="@{mealEditorViewModel.resources}"
+            android:layout_marginVertical="8dp"/>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

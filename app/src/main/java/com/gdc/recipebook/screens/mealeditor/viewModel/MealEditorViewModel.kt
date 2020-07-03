@@ -43,7 +43,10 @@ class MealEditorViewModel(): ViewModel() {
             if (!isNew) {
                 mealWithRelations = mealRepository.retrieveMealWithRelations(mealName)
                 mealNotes.value = mealWithRelations!!.meal.notes
-                _mealFunctions.value = mealWithRelations!!.functions
+
+                mealWithRelations!!.functions?.let {
+                    _mealFunctions.value = mealWithRelations!!.functions
+                }
 
                 mealWithRelations!!.images?.let {
                     imageURL.value = it[it.lastIndex].imageURL

@@ -35,9 +35,8 @@ import com.gdc.recipebook.screens.mealeditor.viewModel.MealEditorViewModelFactor
 class MealEditorFragment: Fragment() {
 
     //CREATE VIEWMODEL AND SET OBJECT RELATIONS
-    val viewModelFactory =
-        MealEditorViewModelFactory()
-    val mealEditorViewModel = viewModelFactory.create(MealEditorViewModel::class.java)
+    private val viewModelFactory = MealEditorViewModelFactory()
+    private val mealEditorViewModel = viewModelFactory.create(MealEditorViewModel::class.java)
 
     override fun onCreateView(
         inflater: LayoutInflater,
