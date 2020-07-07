@@ -1,16 +1,15 @@
 package com.gdc.recipebook.screens.mealeditor.utils
 
+import ImagesAdapter
 import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
-import android.widget.EditText
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.gdc.recipebook.database.dataclasses.Meal
+import com.gdc.recipebook.database.dataclasses.Image
 import com.gdc.recipebook.database.dataclasses.Resource
-import com.gdc.recipebook.screens.meal.resources.ResourceListAdapterMeal
 import com.gdc.recipebook.screens.mealeditor.resources.ResourceListAdapter
+
 
 @BindingAdapter("nameToEditable")
 fun TextView.setMealNameEditable(mealName: String): Editable {
@@ -21,6 +20,12 @@ fun TextView.setMealNameEditable(mealName: String): Editable {
 fun bindRecyclerView(recyclerView: RecyclerView, data: MutableList<Resource>?) {
     val adapter = recyclerView.adapter as ResourceListAdapter
     adapter.submitList(data)
-    Log.d("list submitted", data.toString())
+
 }
 
+@BindingAdapter("imagesListData")
+fun bindImagesRecyclerView(recyclerView: RecyclerView, data: MutableList<Image>?) {
+    val adapter = recyclerView.adapter as ImagesAdapter
+    adapter.addHeaderAndSubmitList(data)
+    Log.d("image list submitted", data.toString())
+}

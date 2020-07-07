@@ -1,11 +1,15 @@
 package com.gdc.recipebook.screens.mealeditor.viewModel
 
+import ImagesAdapter
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import androidx.lifecycle.*
 import com.gdc.recipebook.database.Repository
 import com.gdc.recipebook.database.RoomDatabaseDAO
 import com.gdc.recipebook.database.dataclasses.*
+import com.gdc.recipebook.screens.mealeditor.images.HeaderListener
+import com.gdc.recipebook.screens.mealeditor.images.ImageListener
 import com.gdc.recipebook.screens.mealeditor.resources.ResourceListAdapter
 import com.gdc.recipebook.screens.mealeditor.resources.ResourceListListener
 import com.gdc.recipebook.screens.mealeditor.utils.flipBoolean
@@ -49,7 +53,10 @@ class MealEditorViewModel(): ViewModel() {
                 }
 
                 mealWithRelations!!.images?.let {
-                    imageURL.value = it[it.lastIndex].imageURL
+                    _images.value = it
+
+                    //Remember images originally loaded to correctly remove if necessary
+                    setLoadedImages(it)
                 }
 
                 mealWithRelations!!.resources?.let {
@@ -81,19 +88,12 @@ class MealEditorViewModel(): ViewModel() {
             mealNotes.value = s.toString() } }
 
 
-    //IMAGE LOGIC
-    var imageURL = MutableLiveData("")
-    private var onImageChanged = false
+    //IMAGES LOGIC
+    private var _images = MutableLiveData<MutableList<Image>>(mutableListOf())
+    val images: LiveData<MutableList<Image>>
+        get() = _images
 
-    val imageTextWatcher = object: TextWatcher {
-        override fun afterTextChanged(s: Editable?) {}
-        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            imageURL.value = s.toString()
-            onImageChanged = true
-        }
-    }
-
+    private var onImagesChanged = false
 
     private var _onNewImageClick = MutableLiveData(false)
     val onNewImageClick: LiveData<Boolean>
@@ -104,8 +104,28 @@ class MealEditorViewModel(): ViewModel() {
     }
 
     fun addNewImageURL(url: String) {
-        imageURL.value = url
+        val images = _images.value
+        images!!.add(Image(imageURL = url))
+        _images.value = images
+        onImagesChanged = true
     }
+
+    fun removeImage(image: Image) {
+        val images = _images.value
+        images!!.remove(image)
+        _images.value = images
+        onImagesChanged = true
+        Log.d("images after remove",_images.value.toString())
+    }
+
+    private var loadedImages: MutableList<String>? = null
+    private fun setLoadedImages(images: List<Image>) {
+        loadedImages = mutableListOf()
+        for (image in images) {
+            loadedImages!!.add(image.imageURL)
+        }
+    }
+
 
 
 
@@ -139,13 +159,13 @@ class MealEditorViewModel(): ViewModel() {
     }
 
 
-    private var companionLoadedResources: List<String>? = null
+    private var loadedResources: List<String>? = null
     private fun setLoadedResources(resources: List<Resource>) {
         val incomingUrls = mutableListOf<String>()
         for (resource in resources) {
             incomingUrls.add(resource.resourceURL)
         }
-        companionLoadedResources = incomingUrls
+        loadedResources = incomingUrls
     }
 
     //SAVE DATA LOGIC
@@ -167,15 +187,11 @@ class MealEditorViewModel(): ViewModel() {
                     notes = mealNotes.value!!
                 )
 
-            var newImages: MutableList<Image>? = null
-
-            imageURL.value?.let {
-                if (onImageChanged) {
-                    val newImage = Image(imageURL = it, imageMealId = mealId)
-                    newImages = mutableListOf()
-                    newImages!!.add(newImage)
+            if(onImagesChanged) {
+                for(image in _images.value!!) {
+                    image.imageMealId = mealId
                 }
-            }
+            } else {_images.value = null}
 
 
             if (onResourcesChanged) {
@@ -188,13 +204,14 @@ class MealEditorViewModel(): ViewModel() {
 
             mealRepository.saveMealWithRelations(
                 meal = thisMeal,
-                images = newImages,
-                functions = _mealFunctions.value,
-                loadedResources = companionLoadedResources,
-                savedResources = _resources.value
+                loadedImages = loadedImages,
+                savedImages = images.value,
+                functions = mealFunctions.value,
+                loadedResources = loadedResources,
+                savedResources = resources.value
             )
 
-            onImageChanged = false
+            onImagesChanged = false
             onResourcesChanged = false
         }
     }
@@ -210,12 +227,6 @@ class MealEditorViewModel(): ViewModel() {
     }
 
     fun onDelete() {
-        val newImages = mutableListOf<Image>()
-        imageURL.value?.let {
-            if (it.isNotBlank()) {
-                newImages.add(Image(imageURL = it))
-            }
-        }
         uiScope.launch {
 
             mealRepository.deleteMealWithRelations(

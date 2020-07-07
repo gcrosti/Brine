@@ -27,7 +27,8 @@ class Repository(private val mealsDatabase: RoomDatabaseDAO) {
 
     suspend fun saveMealWithRelations(meal: Meal? = null,
                                       functions: MealFunction? = null,
-                                      images: List<Image>? = null,
+                                      loadedImages: List<String>? = null,
+                                      savedImages: List<Image>? = null,
                                       loadedResources: List<String>? = null,
                                       savedResources: List<Resource>? = null) {
 
@@ -40,7 +41,17 @@ class Repository(private val mealsDatabase: RoomDatabaseDAO) {
                 mealsDatabase.insertFunction(it)
             }
 
-            images?.let {
+            loadedImages?.let {
+                val deletions = savedImages?.let { newImages -> getImagesForDeletion(it,newImages)}
+
+                deletions?.let {
+                    for (url in it) {
+                        mealsDatabase.deleteImageFromUrl(url)
+                    }
+                }
+            }
+
+            savedImages?.let {
                 for (image in it) {
                     mealsDatabase.insertImage(image)
                 }
@@ -75,6 +86,17 @@ class Repository(private val mealsDatabase: RoomDatabaseDAO) {
             }
         }
         return deletionsList
+    }
+
+    private fun getImagesForDeletion(loaded: List<String>, saved: List<Image>): List<String>? {
+        val deletionList: MutableList<String> = loaded as MutableList<String>
+
+        for (image in saved) {
+            if(image.imageURL in deletionList) {
+                deletionList.remove(image.imageURL)
+            }
+        }
+        return deletionList
     }
 
 

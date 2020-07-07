@@ -33,6 +33,9 @@ interface RoomDatabaseDAO {
     @Delete
     fun deleteImage(image:Image)
 
+    @Query("DELETE FROM images_table WHERE imageURL == :url")
+    fun deleteImageFromUrl(url: String)
+
     @Delete
     fun deleteResource(resource: Resource)
 

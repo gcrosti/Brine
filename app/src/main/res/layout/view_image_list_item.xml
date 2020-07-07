@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <variable
+            name="image"
+            type="com.gdc.recipebook.database.dataclasses.Image" />
+
+        <variable
+            name="listener"
+            type="com.gdc.recipebook.screens.mealeditor.images.ImageListener" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="150dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="@dimen/marginSmall"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/mealImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/removeImageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/marginSmall"
+            android:clickable="true"
+            android:focusable="true"
+            android:onClick="@{() -> listener.onClick(image)}"
+            android:tint="#E91E63"
+            app:backgroundTint="#00FFFFFF"
+            app:borderWidth="0dp"
+            app:elevation="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:rippleColor="#00FFFFFF"
+            app:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

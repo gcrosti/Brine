@@ -1,12 +1,11 @@
 package com.gdc.recipebook.screens.mealeditor
 
+import ImagesAdapter
 import android.app.AlertDialog
 import android.app.PendingIntent
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -18,13 +17,12 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
-import com.gdc.recipebook.MainActivity
 import com.gdc.recipebook.R
 import com.gdc.recipebook.database.MealRoomDatabase
 import com.gdc.recipebook.databinding.FragmentMealEditorBinding
+import com.gdc.recipebook.screens.mealeditor.images.HeaderListener
+import com.gdc.recipebook.screens.mealeditor.images.ImageListener
 import com.gdc.recipebook.screens.mealeditor.resources.ResourceBroadcastReceiver
-import com.gdc.recipebook.screens.mealeditor.resources.ResourceListAdapter
-import com.gdc.recipebook.screens.mealeditor.resources.ResourceListListener
 import com.gdc.recipebook.screens.mealeditor.resources.TextToBitmap
 import com.gdc.recipebook.screens.mealeditor.utils.EditorLifecycleObserver
 import com.gdc.recipebook.screens.mealeditor.utils.PhotoActivityResultContract
@@ -66,15 +64,6 @@ class MealEditorFragment: Fragment() {
 
 
         //BUTTON CLICK HANDLERS
-        mealEditorViewModel.onNewImageClick.observe(viewLifecycleOwner,  Observer {
-            if (it == true) {
-                val getContent =
-                    registerForActivityResult(PhotoActivityResultContract()) { uri: Uri? ->
-                        mealEditorViewModel.addNewImageURL(uri.toString())
-                    }
-                getContent.launch("image/*")
-            }
-        })
 
         mealEditorViewModel.onSaveMealClick.observe(viewLifecycleOwner,  Observer {
             if (it == true) {
@@ -101,7 +90,7 @@ class MealEditorFragment: Fragment() {
         //EDITABLE OBSERVERS
         binding.editName.addTextChangedListener(mealEditorViewModel.nameTextWatcher)
         binding.editNotes.addTextChangedListener(mealEditorViewModel.notesTextWatcher)
-        binding.imageURI.addTextChangedListener(mealEditorViewModel.imageTextWatcher)
+        //binding.imageURI.addTextChangedListener(mealEditorViewModel.imageTextWatcher)
 
         binding.mealEditorViewModel = mealEditorViewModel
         binding.lifecycleOwner = this
@@ -109,7 +98,6 @@ class MealEditorFragment: Fragment() {
 
 
         //RESOURCES LOGIC
-
         binding.resourcesRecyclerView.adapter = mealEditorViewModel.adapter
 
         // Get URL from Intent when activity resumed
@@ -125,6 +113,29 @@ class MealEditorFragment: Fragment() {
             val lifecycleObserver = EditorLifecycleObserver(it,getUrlFromIntent)
             it.addObserver(lifecycleObserver)
         }
+
+
+        //IMAGES LOGIC
+
+        val imageAdapter = ImagesAdapter(
+            imageClickListener = ImageListener { image -> mealEditorViewModel.removeImage(image)
+                Log.d("clickListen", image.toString())},
+            headerClickListener = HeaderListener { mealEditorViewModel.onNewImageClick() }
+        )
+
+        binding.imagesRecyclerView.adapter = imageAdapter
+
+
+        mealEditorViewModel.onNewImageClick.observe(viewLifecycleOwner,  Observer {
+            if (it == true) {
+                val getContent =
+                    registerForActivityResult(PhotoActivityResultContract()) { uri: Uri? ->
+                        mealEditorViewModel.addNewImageURL(uri.toString())
+                        imageAdapter.notifyDataSetChanged()
+                    }
+                getContent.launch("image/*")
+            }
+        })
 
 
         return binding.root

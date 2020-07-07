@@ -178,28 +178,6 @@
             android:layout_marginVertical="8dp"/>
 
         <Button
-            android:id="@+id/imageButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/pickImage"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/dessertCheck"
-            android:onClick="@{() -> mealEditorViewModel.onNewImageClick()}"
-            android:layout_marginVertical="8dp"/>
-
-
-        <EditText
-            android:id="@+id/imageURI"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toStartOf="@+id/imageButton"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/dessertCheck"
-            android:text="@{mealEditorViewModel.imageURL}"
-            android:layout_marginVertical="8dp"/>
-
-
-        <Button
             android:id="@+id/addResourceButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -207,7 +185,7 @@
             app:layout_constraintBottom_toTopOf="@+id/resourcesRecyclerView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageURI"
+            app:layout_constraintTop_toBottomOf="@+id/imagesRecyclerView"
             android:onClick="@{() -> mealEditorViewModel.onAddResourceClick()}"
             android:layout_marginVertical="8dp"/>
 
@@ -222,6 +200,19 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             editorListData="@{mealEditorViewModel.resources}"
             android:layout_marginVertical="8dp"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/imagesRecyclerView"
+            imagesListData="@{mealEditorViewModel.images}"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_marginVertical="8dp"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toTopOf="@id/addResourceButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/dessertCheck" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
