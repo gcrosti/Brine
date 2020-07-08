@@ -38,7 +38,6 @@ class ImagesAdapter(private val imageClickListener: ImageListener, private val h
             is ImageViewHolder -> {
                 val item = getItem(position) as DataItem.Image
                 holder.bind(item = item.image, listener = imageClickListener)
-                Log.d("item bound", item.image.toString())
             }
             is HeaderViewHolder -> {
                 holder.bind(listener = headerClickListener)

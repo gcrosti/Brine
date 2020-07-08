@@ -19,7 +19,7 @@ class ImageViewHolder private constructor(val binding: ViewImageListItemBinding)
         Glide
             .with(binding.root)
             .load(item.imageURL)
-            .fitCenter()
+            .centerCrop()
             .into(binding.mealImage)
     }
 

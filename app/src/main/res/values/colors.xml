@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#6200EE</color>
-    <color name="colorPrimaryDark">#3700B3</color>
-    <color name="colorAccent">#03DAC5</color>
-    <color name="removeEditorColor">#59000000</color>
+    <color name="primaryColor">#ffffff</color>
+    <color name="primaryLightColor">#ffffff</color>
+    <color name="primaryDarkColor">#cccccc</color>
+    <color name="secondaryColor">#707070</color>
+    <color name="secondaryLightColor">#9e9e9e</color>
+    <color name="secondaryDarkColor">#454545</color>
+    <color name="primaryTextColor">#000000</color>
+    <color name="secondaryTextColor">#ffffff</color>
+    <color name="accentColor">#f1c232</color>
+    <color name="deleteColor">#F44336</color>
 </resources>

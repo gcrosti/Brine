@@ -31,11 +31,8 @@
         android:layout_marginBottom="16dp"
         android:clickable="true"
         android:focusable="true"
-        android:tint="@color/colorPrimaryDark"
-        app:backgroundTint="@color/ic_launcher_background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:rippleColor="@color/colorPrimaryDark"
         app:srcCompat="@android:drawable/ic_input_add"
         android:onClick="@{() -> mealListViewModel.onNewMealClick()}"/>
 

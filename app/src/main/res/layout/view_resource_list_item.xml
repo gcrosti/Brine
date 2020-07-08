@@ -34,6 +34,6 @@
         android:onClick="@{() -> clickListener.onClick(resource)}"
         android:text="@string/remove"
         android:textAlignment="textEnd"
-        android:textColor="@color/ic_launcher_background" />
+        android:textColor="@color/primaryDarkColor" />
 </LinearLayout>
 </layout>

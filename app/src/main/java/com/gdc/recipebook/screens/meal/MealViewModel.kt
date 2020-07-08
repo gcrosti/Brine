@@ -35,10 +35,10 @@ class MealViewModel: ViewModel() {
 
     //PUBLIC DATA FOR DISPLAY
     val thisMeal = MutableLiveData(Meal(mealId = 0L, name = mealName))
-    val mealImage = MutableLiveData<Image?>(mealWithRelations?.images?.get(0))
     val functions = MutableLiveData<MealFunction>(mealWithRelations?.functions)
     val resources = MutableLiveData<List<Resource>>(mealWithRelations?.resources)
     val adapter = ResourceListAdapterMeal()
+    val images = MutableLiveData(mealWithRelations?.images)
 
 
     // LOAD DATA
@@ -47,7 +47,7 @@ class MealViewModel: ViewModel() {
         uiScope.launch {
             mealWithRelations = mealRepository.retrieveMealWithRelations(mealName)
             thisMeal.value = mealWithRelations!!.meal
-            mealImage.value = mealWithRelations!!.images?.get(mealWithRelations!!.images!!.lastIndex)
+            images.value = mealWithRelations!!.images
             functions.value = mealWithRelations!!.functions
             resources.value = mealWithRelations!!.resources
 

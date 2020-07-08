@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide
 import com.gdc.recipebook.R
 import com.gdc.recipebook.database.MealRoomDatabase
 import com.gdc.recipebook.databinding.FragmentMealBinding
+import com.gdc.recipebook.screens.meal.images.ImageSliderAdapter
 import kotlinx.android.synthetic.main.fragment_meal.*
 
 
@@ -48,12 +49,17 @@ class MealFragment: Fragment() {
             mealViewModel.setNameFromArg(nameFromArg)
         }
 
-        //IMAGE OBSERVER
-        mealViewModel.mealImage.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                displayImage(it.imageURL)
+        //IMAGES
+        mealViewModel.images.observe(viewLifecycleOwner, Observer { imageList ->
+            if (imageList != null) {
+                if (imageList.isNotEmpty()) {
+                    val adapter = context?.let { ImageSliderAdapter(it,imageList) }
+                    binding.imageViewPager.adapter = adapter
+                    Log.d("images submitted", imageList.toString())
+                }
             }
         })
+
 
         //BIND ADAPTER
         binding.resourcesMealRecyclerView.adapter = mealViewModel.adapter
@@ -83,13 +89,5 @@ class MealFragment: Fragment() {
         view?.findNavController()?.navigate(action)
     }
 
-    private fun displayImage(uriString: String) {
-        view?.context?.let {
-            Glide
-                .with(it)
-                .load(uriString)
-                .fitCenter()
-                .into(recipeImage)
-        }
-    }
+
 }

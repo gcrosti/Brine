@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="defaultPadding">16dp</dimen>
-    <dimen name="defaultMargin">16dp</dimen>
-    <dimen name="fragmentTitleTextSize">24sp</dimen>
+    <dimen name="paddingLarge">16dp</dimen>
+    <dimen name="marginLarge">16dp</dimen>
+    <dimen name="fragmentTitleTextSize">18sp</dimen>
     <dimen name="marginSmall">4dp</dimen>
+    <dimen name="defaultTextSize">16sp</dimen>
+    <dimen name="smallTextSize">12sp</dimen>
 </resources>
