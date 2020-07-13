@@ -8,8 +8,6 @@
         <variable
             name="mealListViewModel"
             type="com.gdc.recipebook.screens.meallist.MealListViewModel" />
-
-
     </data>
 
 <androidx.constraintlayout.widget.ConstraintLayout
@@ -34,7 +32,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@android:drawable/ic_input_add"
-        android:onClick="@{() -> mealListViewModel.onNewMealClick()}"/>
+        android:onClick="@{() -> mealListViewModel.onNewMealClick()}" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

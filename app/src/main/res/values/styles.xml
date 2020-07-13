@@ -7,6 +7,16 @@
         <item name="colorPrimaryDark">@color/primaryDarkColor</item>
         <item name="colorAccent">@color/accentColor</item>
         <item name="fontFamily">@font/font_family</item>
+        <item name="floatingActionButtonStyle">@style/Widget.App.FloatingActionButton</item>
+    </style>
+
+
+
+    <style name="Widget.App.FloatingActionButton" parent="Widget.MaterialComponents.FloatingActionButton">
+        <item name="tint">@color/primaryColor</item>
+        <item name="backgroundTint">@color/accentColor</item>
+        <item name="iconTint">@color/primaryColor</item>
+        <item name="tabIconTint">@color/primaryColor</item>
     </style>
 
 </resources>

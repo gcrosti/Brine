@@ -39,10 +39,6 @@ class MealFragment: Fragment() {
         binding.mealViewModel = mealViewModel
         binding.lifecycleOwner = this
 
-        val application = requireNotNull(this.activity).application
-        val dataSource = MealRoomDatabase.getInstance(application).databaseDAO
-        mealViewModel.setDatabase(dataSource)
-
         var nameFromArg = ""
         arguments?.let {
             nameFromArg = MealFragmentArgs.fromBundle(it).mealName

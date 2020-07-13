@@ -5,14 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.gdc.recipebook.database.RoomDatabaseDAO
 
-class MealListViewModelFactory (
-    private val datasource: RoomDatabaseDAO,
-    private val application: Application): ViewModelProvider.Factory {
-
+class MealListViewModelFactory (): ViewModelProvider.Factory {
     @Suppress("unchecked_cast")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if(modelClass.isAssignableFrom(MealListViewModel::class.java)) {
-        return MealListViewModel(datasource, application) as T }
+        return MealListViewModel() as T }
 
         throw IllegalArgumentException()
     }

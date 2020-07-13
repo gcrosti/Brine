@@ -1,15 +1,13 @@
 package com.gdc.recipebook.screens.mealeditor.viewModel
 
-import ImagesAdapter
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.gdc.recipebook.database.Repository
-import com.gdc.recipebook.database.RoomDatabaseDAO
 import com.gdc.recipebook.database.dataclasses.*
-import com.gdc.recipebook.screens.mealeditor.images.HeaderListener
-import com.gdc.recipebook.screens.mealeditor.images.ImageListener
 import com.gdc.recipebook.screens.mealeditor.resources.ResourceListAdapter
 import com.gdc.recipebook.screens.mealeditor.resources.ResourceListListener
 import com.gdc.recipebook.screens.mealeditor.utils.flipBoolean
@@ -24,15 +22,6 @@ class MealEditorViewModel(): ViewModel() {
     private var viewModelJob = Job()
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
-    //RETRIEVE DATABASE
-    private lateinit var database: RoomDatabaseDAO
-    private lateinit var mealRepository: Repository
-
-    fun setDatabase(dataSource: RoomDatabaseDAO) {
-        database = dataSource
-        mealRepository = Repository(dataSource)
-    }
-
     //CREATE A NEW MEALID OR FIND EXISTING DATA FOR THIS MEAL
     private var mealId = 0L
     private var isNew = false
@@ -41,11 +30,11 @@ class MealEditorViewModel(): ViewModel() {
 
     fun setMealId() {
         uiScope.launch {
-            val result = mealRepository.setMealId(mealName)
+            val result = Repository.setMealId(mealName)
             mealId = result.first
             isNew = result.second
             if (!isNew) {
-                mealWithRelations = mealRepository.retrieveMealWithRelations(mealName)
+                mealWithRelations = Repository.retrieveMealWithRelations(mealName)
                 mealNotes.value = mealWithRelations!!.meal.notes
 
                 mealWithRelations!!.functions?.let {
@@ -202,7 +191,7 @@ class MealEditorViewModel(): ViewModel() {
 
             _mealFunctions.value?.functionMealId = mealId
 
-            mealRepository.saveMealWithRelations(
+            Repository.saveMealWithRelations(
                 meal = thisMeal,
                 loadedImages = loadedImages,
                 savedImages = images.value,
@@ -229,7 +218,7 @@ class MealEditorViewModel(): ViewModel() {
     fun onDelete() {
         uiScope.launch {
 
-            mealRepository.deleteMealWithRelations(
+            Repository.deleteMealWithRelations(
                 meal = mealWithRelations?.meal,
                 functions = mealWithRelations?.functions,
                 images = mealWithRelations?.images)

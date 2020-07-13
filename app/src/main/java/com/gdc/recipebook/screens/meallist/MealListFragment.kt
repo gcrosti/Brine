@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import com.gdc.recipebook.R
-import com.gdc.recipebook.database.MealRoomDatabase
+import com.gdc.recipebook.database.Repository
 import com.gdc.recipebook.databinding.FragmentMealListBinding
 import kotlinx.android.synthetic.main.view_newmeal_dialog.*
 
@@ -35,21 +35,16 @@ class MealListFragment : Fragment() {
         val binding: FragmentMealListBinding = DataBindingUtil.inflate(
             inflater,R.layout.fragment_meal_list,container,false)
 
-
-        val application = requireNotNull(this.activity).application
-
-        val dataSource = MealRoomDatabase.getInstance(application).databaseDAO
-        val viewModelFactory = MealListViewModelFactory(dataSource,application)
+        val viewModelFactory = MealListViewModelFactory()
         val mealListViewModel = viewModelFactory.create(MealListViewModel::class.java)
 
         binding.mealListViewModel = mealListViewModel
-        mealListViewModel.getAllMeals()
 
         val adapter = MealListAdapter(MealListListener { name -> navToMeal(name) })
 
-        mealListViewModel.mealsWithFunctions.observe(viewLifecycleOwner, Observer {
+        Repository.mealsWithFunctions.observe(viewLifecycleOwner, Observer {
                 adapter.submitList(it)
-                Log.d("list submitted",it.toString())})
+                Log.d("mealswithfunc submitted",it.toString())})
 
         binding.recipeListRecyclerView.adapter = adapter
 

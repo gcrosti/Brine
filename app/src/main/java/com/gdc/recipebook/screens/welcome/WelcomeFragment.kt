@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import com.gdc.recipebook.R
-import com.gdc.recipebook.database.MealRoomDatabase
+import com.gdc.recipebook.database.Repository
 import com.gdc.recipebook.databinding.FragmentWelcomeBinding
 import kotlinx.android.synthetic.main.view_newmeal_dialog.*
 
@@ -25,16 +25,13 @@ class WelcomeFragment: Fragment() {
         val binding: FragmentWelcomeBinding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_welcome,container,false)
 
-
-        val application = requireNotNull(this.activity).application
-        val dataSource = MealRoomDatabase.getInstance(application).databaseDAO
-        val viewModelFactory = WelcomeViewModelFactory(dataSource)
+        val viewModelFactory = WelcomeViewModelFactory()
         val welcomeViewModel = viewModelFactory.create(WelcomeViewModel::class.java)
 
         binding.welcomeViewModel = welcomeViewModel
         binding.lifecycleOwner = this
 
-        welcomeViewModel.mealsWithFunctions.observe(viewLifecycleOwner, Observer {
+        Repository.mealsWithFunctions.observe(viewLifecycleOwner, Observer {
             if (it != null) {
                 navToList()
             }

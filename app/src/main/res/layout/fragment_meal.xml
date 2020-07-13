@@ -46,11 +46,10 @@
 
             <TextView
                 android:id="@+id/recipeFunction"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/marginLarge"
                 android:text="@string/mealFunction"
-                android:textAlignment="center"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -69,7 +68,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/resourcesMealRecyclerView"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginHorizontal="@dimen/marginLarge"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/resourcesMealRecyclerView"
@@ -80,7 +80,8 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/recipeFunction"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                mealListData="@{mealViewModel.resources}"/>
+                mealListData="@{mealViewModel.resources}"
+                android:layout_marginHorizontal="@dimen/marginLarge"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>

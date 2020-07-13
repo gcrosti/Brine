@@ -1,23 +1,60 @@
 package com.gdc.recipebook.database
 
-import android.util.Log
+import android.content.Context
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.gdc.recipebook.database.dataclasses.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 
-class Repository(private val mealsDatabase: RoomDatabaseDAO) {
+object Repository {
 
+    private lateinit var database: RoomDatabaseDAO
+    private val repoJob = Job()
+    private val uiScope = CoroutineScope(Dispatchers.Main + repoJob)
+
+    fun setDatabase(context: Context? = null) {
+        context?.let {
+            database = MealRoomDatabase.getInstance(it).databaseDAO
+        }
+    }
+
+
+
+
+    fun setMealsWithFunctions() {
+        uiScope.launch {
+            _mealsWithFunctions.value = getAllMealsWithFunctionsFromDatabase()
+        }
+    }
+
+
+
+    //Meals With Functions
+    private var _mealsWithFunctions = MutableLiveData<List<MealWithFunctions>?>()
+
+    val mealsWithFunctions: LiveData<List<MealWithFunctions>?>
+        get() = _mealsWithFunctions
+
+    private suspend fun getAllMealsWithFunctionsFromDatabase(): List<MealWithFunctions>? {
+        return withContext(Dispatchers.IO) {
+            var data: List<MealWithFunctions>? = database.getAllMealsWithFunctions()
+            if (data.isNullOrEmpty()) {
+                data = null
+            }
+            data
+        }
+    }
 
 
     suspend fun setMealId(name: String): Pair<Long,Boolean> {
         return withContext(Dispatchers.IO) {
             var isNew = false
             val mealId: Long
-            var meal = mealsDatabase.getMealFromName(name)
+            var meal = database.getMealFromName(name)
             if (meal == null) {
                 isNew = true
                 meal = Meal(name = name)
-                mealId = mealsDatabase.insertMeal(meal)
+                mealId = database.insertMeal(meal)
             } else {
                 mealId = meal.mealId
             }
@@ -34,11 +71,11 @@ class Repository(private val mealsDatabase: RoomDatabaseDAO) {
 
         withContext(Dispatchers.IO) {
             meal?.let {
-                mealsDatabase.insertMeal(it)
+                database.insertMeal(it)
             }
 
             functions?.let {
-                mealsDatabase.insertFunction(it)
+                database.insertFunction(it)
             }
 
             loadedImages?.let {
@@ -46,14 +83,14 @@ class Repository(private val mealsDatabase: RoomDatabaseDAO) {
 
                 deletions?.let {
                     for (url in it) {
-                        mealsDatabase.deleteImageFromUrl(url)
+                        database.deleteImageFromUrl(url)
                     }
                 }
             }
 
             savedImages?.let {
                 for (image in it) {
-                    mealsDatabase.insertImage(image)
+                    database.insertImage(image)
                 }
             }
 
@@ -62,14 +99,14 @@ class Repository(private val mealsDatabase: RoomDatabaseDAO) {
 
                 deletions?.let {
                     for (url in it) {
-                        mealsDatabase.deleteFromResourcesWithUrl(url)
+                        database.deleteFromResourcesWithUrl(url)
                     }
                 }
             }
 
             savedResources?.let {
                 for (resource in it) {
-                    mealsDatabase.insertResource(resource)
+                    database.insertResource(resource)
                 }
             }
         }
@@ -101,16 +138,7 @@ class Repository(private val mealsDatabase: RoomDatabaseDAO) {
 
 
 
-    suspend fun getAllMealsWithFunctionsFromDatabase(): MutableList<MealWithFunctions>? {
-        return withContext(Dispatchers.IO) {
-            var data = mealsDatabase.getAllMealsWithFunctions() as MutableList<MealWithFunctions>?
-            if (data.isNullOrEmpty()) {
-                data = null
-            }
 
-            data
-        }
-    }
 
 
     suspend fun deleteMealWithRelations(
@@ -120,16 +148,16 @@ class Repository(private val mealsDatabase: RoomDatabaseDAO) {
     ) {
         withContext(Dispatchers.IO) {
             meal?.let {
-                mealsDatabase.deleteMeal(meal)
+                database.deleteMeal(meal)
             }
 
             functions?.let {
-                mealsDatabase.deleteFunctions(it)
+                database.deleteFunctions(it)
             }
 
             images?.let {
                 for (image in it) {
-                    mealsDatabase.deleteImage(image)
+                    database.deleteImage(image)
                 }
             }
 
@@ -138,10 +166,10 @@ class Repository(private val mealsDatabase: RoomDatabaseDAO) {
 
     suspend fun retrieveMealWithRelations(name:String): MealWithRelations {
         return withContext(Dispatchers.IO) {
-            val meal = mealsDatabase.getMealFromName(name)
-            val functions = mealsDatabase.getFunctionsFromId(meal.mealId)
-            val images = mealsDatabase.getImagesFromId(meal.mealId)
-            val resources = mealsDatabase.getResourcesFromId(meal.mealId)
+            val meal = database.getMealFromName(name)
+            val functions = database.getFunctionsFromId(meal.mealId)
+            val images = database.getImagesFromId(meal.mealId)
+            val resources = database.getResourcesFromId(meal.mealId)
             val mealWithRelations = MealWithRelations(meal)
 
             functions?.let {
@@ -160,6 +188,4 @@ class Repository(private val mealsDatabase: RoomDatabaseDAO) {
 
         }
     }
-
-
 }

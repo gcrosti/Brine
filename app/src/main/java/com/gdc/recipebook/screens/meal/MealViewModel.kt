@@ -20,14 +20,6 @@ class MealViewModel: ViewModel() {
     private var viewModelJob = Job()
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
-    //RETRIEVE DATABASE
-    private lateinit var database: RoomDatabaseDAO
-    private lateinit var mealRepository: Repository
-
-    fun setDatabase(dataSource: RoomDatabaseDAO) {
-        database = dataSource
-        mealRepository = Repository(dataSource)
-    }
 
     //RETRIEVE THE RELEVANT DATA
     private var mealName = ""
@@ -45,7 +37,7 @@ class MealViewModel: ViewModel() {
     fun setNameFromArg(name: String) {
         mealName = name
         uiScope.launch {
-            mealWithRelations = mealRepository.retrieveMealWithRelations(mealName)
+            mealWithRelations = Repository.retrieveMealWithRelations(mealName)
             thisMeal.value = mealWithRelations!!.meal
             images.value = mealWithRelations!!.images
             functions.value = mealWithRelations!!.functions

@@ -8,24 +8,26 @@
             type="com.gdc.recipebook.screens.mealeditor.images.HeaderListener" />
     </data>
 
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="150dp"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:layout_gravity="center_horizontal">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="150dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal"
+        android:background="#07000000"
+        android:orientation="vertical">
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/ic_input_add"
-        android:focusable="true"
-        android:onClick="@{() -> clicklistener.onClick()}"/>
+        <Button
+            android:id="@+id/imagesHeaderButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:onClick="@{() -> clicklistener.onClick()}"
+            android:text="@string/add_images"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@android:drawable/ic_input_add" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -1,5 +1,7 @@
 package com.gdc.recipebook.database
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.room.*
 import com.gdc.recipebook.database.dataclasses.*
 
@@ -57,6 +59,7 @@ interface RoomDatabaseDAO {
     @Transaction
     @Query("SELECT * FROM meals_table")
     fun getAllMealsWithFunctions(): List<MealWithFunctions>
+
 
     @Query("SELECT * FROM functions_table")
     fun getAllFunctions(): List<MealFunction>

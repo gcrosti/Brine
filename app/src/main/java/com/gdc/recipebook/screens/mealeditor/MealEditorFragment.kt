@@ -46,10 +46,6 @@ class MealEditorFragment: Fragment() {
         val binding: FragmentMealEditorBinding = DataBindingUtil.inflate(
             inflater,R.layout.fragment_meal_editor,container,false)
 
-        val application = requireNotNull(this.activity).application
-
-        //CREATE DATABASE REFERENCE
-        val dataSource = MealRoomDatabase.getInstance(application).databaseDAO
 
         //RETRIEVE ARG DATA
         var nameFromArg = ""
@@ -58,10 +54,7 @@ class MealEditorFragment: Fragment() {
             mealEditorViewModel.mealName = nameFromArg
         }
 
-        mealEditorViewModel.setDatabase(dataSource)
         mealEditorViewModel.setMealId()
-
-
 
         //BUTTON CLICK HANDLERS
 

@@ -30,6 +30,7 @@
             android:id="@+id/action_recipeListFragment_to_recipeEditorFragment"
             app:destination="@id/recipeEditorFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/recipeFragment"
         android:name="com.gdc.recipebook.screens.meal.MealFragment"
@@ -45,6 +46,7 @@
             android:id="@+id/action_recipeFragment_to_recipeEditorFragment"
             app:destination="@id/recipeEditorFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/recipeEditorFragment"
         android:name="com.gdc.recipebook.screens.mealeditor.MealEditorFragment"
@@ -60,5 +62,8 @@
             android:id="@+id/action_recipeEditorFragment_to_recipeListFragment"
             app:destination="@id/recipeListFragment" />
     </fragment>
+
+    <action android:id="@+id/action_global_recipeListFragment" app:destination="@id/recipeListFragment"/>
+
 
 </navigation>

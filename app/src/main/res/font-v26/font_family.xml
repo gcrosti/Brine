@@ -3,8 +3,11 @@
     <font
         android:fontStyle="normal"
         android:font="@font/lato_regular" />
+
     <font
         android:fontStyle="italic"
         android:font="@font/lato_italic" />
+
+
 
 </font-family>

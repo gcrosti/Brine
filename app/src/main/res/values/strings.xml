@@ -29,4 +29,6 @@
     <string name="testURL">https://www.gimmesomeoven.com/homemade-pasta/</string>
     <string name="defaultNotes">This meal has no notes.</string>
     <string name="remove">Remove</string>
+    <string name="meal_images">Meal Images</string>
+    <string name="add_images">Add Images</string>
 </resources>
