@@ -12,7 +12,7 @@ import com.google.firebase.storage.FirebaseStorage
 
 class FirebaseDataManager() {
 
-    private val authString = "asdkfjhasdlfaxdoifasfjndls"
+    private val authString = FirebaseAuth.authString
     private val database = Firebase.database.getReference(authString)
     private val storage = FirebaseStorage.getInstance()
     private val MEAL = "MEAL"
