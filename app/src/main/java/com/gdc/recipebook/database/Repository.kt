@@ -1,6 +1,7 @@
 package com.gdc.recipebook.database
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.gdc.recipebook.database.dataclasses.*
@@ -11,6 +12,7 @@ object Repository {
     private lateinit var database: RoomDatabaseDAO
     private val repoJob = Job()
     private val uiScope = CoroutineScope(Dispatchers.Main + repoJob)
+    private val firebaseDataManager = FirebaseDataManager()
 
     fun setDatabase(context: Context? = null) {
         context?.let {
@@ -18,16 +20,11 @@ object Repository {
         }
     }
 
-
-
-
     fun setMealsWithFunctions() {
         uiScope.launch {
             _mealsWithFunctions.value = getAllMealsWithFunctionsFromDatabase()
         }
     }
-
-
 
     //Meals With Functions
     private var _mealsWithFunctions = MutableLiveData<List<MealWithFunctions>?>()
@@ -40,7 +37,10 @@ object Repository {
             var data: List<MealWithFunctions>? = database.getAllMealsWithFunctions()
             if (data.isNullOrEmpty()) {
                 data = null
+            } else {
+                data = data.sortedBy { it.meal.name  }
             }
+
             data
         }
     }
@@ -62,20 +62,24 @@ object Repository {
         }
     }
 
-    suspend fun saveMealWithRelations(meal: Meal? = null,
+    suspend fun saveMealWithRelations(meal: Meal,
                                       functions: MealFunction? = null,
                                       loadedImages: List<String>? = null,
                                       savedImages: List<Image>? = null,
                                       loadedResources: List<String>? = null,
                                       savedResources: List<Resource>? = null) {
 
+        val mealId = meal.mealId
+
         withContext(Dispatchers.IO) {
-            meal?.let {
+            meal.let {
                 database.insertMeal(it)
+                firebaseDataManager.saveMeal(it)
             }
 
             functions?.let {
                 database.insertFunction(it)
+                firebaseDataManager.saveFunctions(it)
             }
 
             loadedImages?.let {
@@ -92,6 +96,8 @@ object Repository {
                 for (image in it) {
                     database.insertImage(image)
                 }
+
+                firebaseDataManager.saveImages(mealId,it)
             }
 
             loadedResources?.let {
@@ -105,9 +111,13 @@ object Repository {
             }
 
             savedResources?.let {
+
                 for (resource in it) {
                     database.insertResource(resource)
                 }
+
+                firebaseDataManager.saveResources(mealId,it)
+
             }
         }
     }
@@ -137,10 +147,6 @@ object Repository {
     }
 
 
-
-
-
-
     suspend fun deleteMealWithRelations(
         meal: Meal? = null,
         functions: MealFunction? = null,
@@ -149,6 +155,7 @@ object Repository {
         withContext(Dispatchers.IO) {
             meal?.let {
                 database.deleteMeal(meal)
+                firebaseDataManager.deleteMeal(meal)
             }
 
             functions?.let {

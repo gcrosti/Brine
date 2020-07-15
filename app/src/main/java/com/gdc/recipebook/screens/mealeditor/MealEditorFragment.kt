@@ -97,6 +97,7 @@ class MealEditorFragment: Fragment() {
         val getUrlFromIntent: () -> Unit = {
             val urlString = activity?.intent?.extras?.getString(Intent.EXTRA_TEXT)
             urlString?.let {
+                Log.d("urltoadd", it)
                 mealEditorViewModel.addNewResource(it)
                 mealEditorViewModel.adapter.notifyDataSetChanged()
             }

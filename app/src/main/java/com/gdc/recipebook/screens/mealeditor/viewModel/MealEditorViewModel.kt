@@ -137,7 +137,7 @@ class MealEditorViewModel(): ViewModel() {
     }
 
     fun addNewResource(uri: String) {
-        _resources.value!!.add(Resource(resourceURL = uri))
+        _resources.value?.add(Resource(resourceURL = uri))
         onResourcesChanged = true
     }
 
