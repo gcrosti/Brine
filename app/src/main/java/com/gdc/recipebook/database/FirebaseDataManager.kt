@@ -1,10 +1,7 @@
 package com.gdc.recipebook.database
 
 import androidx.core.net.toUri
-import com.gdc.recipebook.database.dataclasses.Image
-import com.gdc.recipebook.database.dataclasses.Meal
-import com.gdc.recipebook.database.dataclasses.MealFunction
-import com.gdc.recipebook.database.dataclasses.Resource
+import com.gdc.recipebook.database.dataclasses.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.ktx.Firebase
@@ -12,7 +9,7 @@ import com.google.firebase.storage.FirebaseStorage
 
 class FirebaseDataManager() {
 
-    private val authString = FirebaseAuth.authString
+    private val authString = FirebaseDBauth.authString
     private val database = Firebase.database.getReference(authString)
     private val storage = FirebaseStorage.getInstance()
     private val MEAL = "MEAL"

@@ -14,4 +14,4 @@
 .cxx
 /app/src/main/res/values/strings_hidden.xml
 /app/google-services.json
-/app/src/main/java/com/gdc/recipebook/database/FirebaseAuth.kt
+/app/src/main/java/com/gdc/recipebook/database/dataclasses/FirebaseDBauth.kt
