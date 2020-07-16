@@ -45,7 +45,7 @@ object Repository {
         }
     }
 
-
+    //Save Meal
     suspend fun setMealId(name: String): Pair<Long,Boolean> {
         return withContext(Dispatchers.IO) {
             var isNew = false
@@ -69,17 +69,13 @@ object Repository {
                                       loadedResources: List<String>? = null,
                                       savedResources: List<Resource>? = null) {
 
-        val mealId = meal.mealId
-
         withContext(Dispatchers.IO) {
             meal.let {
                 database.insertMeal(it)
-                firebaseDataManager.saveMeal(it)
             }
 
             functions?.let {
                 database.insertFunction(it)
-                firebaseDataManager.saveFunctions(it)
             }
 
             loadedImages?.let {
@@ -96,8 +92,6 @@ object Repository {
                 for (image in it) {
                     database.insertImage(image)
                 }
-
-                firebaseDataManager.saveImages(mealId,it)
             }
 
             loadedResources?.let {
@@ -111,14 +105,28 @@ object Repository {
             }
 
             savedResources?.let {
-
                 for (resource in it) {
                     database.insertResource(resource)
                 }
-
-                firebaseDataManager.saveResources(mealId,it)
-
             }
+        }
+
+        saveMealWithRelationsToRemote(meal.mealId)
+    }
+
+    private suspend fun saveMealWithRelationsToRemote(mealId: Long) {
+        withContext(Dispatchers.IO) {
+
+            val meal = database.getMealFromId(mealId)
+            val resources = database.getResourcesFromId(mealId)
+            val functions = database.getFunctionsFromId(mealId)
+            val images = database.getImagesFromId(mealId)
+
+            firebaseDataManager.saveMeal(meal)
+            firebaseDataManager.saveFunctions(functions)
+            firebaseDataManager.saveResources(mealId,resources)
+            firebaseDataManager.saveImages(mealId,images)
+
         }
     }
 
@@ -147,30 +155,7 @@ object Repository {
     }
 
 
-    suspend fun deleteMealWithRelations(
-        meal: Meal? = null,
-        functions: MealFunction? = null,
-        images: List<Image>? = null
-    ) {
-        withContext(Dispatchers.IO) {
-            meal?.let {
-                database.deleteMeal(meal)
-                firebaseDataManager.deleteMeal(meal)
-            }
-
-            functions?.let {
-                database.deleteFunctions(it)
-            }
-
-            images?.let {
-                for (image in it) {
-                    database.deleteImage(image)
-                }
-            }
-
-        }
-    }
-
+    //Retrieve Meal
     suspend fun retrieveMealWithRelations(name:String): MealWithRelations {
         return withContext(Dispatchers.IO) {
             val meal = database.getMealFromName(name)
@@ -192,6 +177,33 @@ object Repository {
             }
 
             mealWithRelations
+
+        }
+    }
+
+
+
+    //Delete meal
+    suspend fun deleteMealWithRelations(
+        meal: Meal? = null,
+        functions: MealFunction? = null,
+        images: List<Image>? = null
+    ) {
+        withContext(Dispatchers.IO) {
+            meal?.let {
+                database.deleteMeal(meal)
+                firebaseDataManager.deleteMeal(meal)
+            }
+
+            functions?.let {
+                database.deleteFunctions(it)
+            }
+
+            images?.let {
+                for (image in it) {
+                    database.deleteImage(image)
+                }
+            }
 
         }
     }

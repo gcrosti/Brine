@@ -67,6 +67,9 @@ interface RoomDatabaseDAO {
     @Query("SELECT * FROM meals_table WHERE name == :mealName")
     fun getMealFromName(mealName: String): Meal
 
+    @Query("SELECT * FROM meals_table WHERE mealId == :mealId")
+    fun getMealFromId(mealId: Long): Meal
+
     @Query("SELECT * FROM functions_table WHERE functionMealId == :id")
     fun getFunctionsFromId(id: Long): MealFunction
 

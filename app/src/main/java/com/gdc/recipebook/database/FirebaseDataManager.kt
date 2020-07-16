@@ -1,5 +1,6 @@
 package com.gdc.recipebook.database
 
+import android.util.Log
 import androidx.core.net.toUri
 import com.gdc.recipebook.database.dataclasses.*
 import com.google.firebase.database.ktx.database
@@ -40,11 +41,26 @@ class FirebaseDataManager() {
 
     //IMAGES
     fun saveImages(mealId: Long, images: List<Image>) {
+        val imagesfromdb = databaseInstanceRef.child(mealId.toString())
         databaseInstanceRef.child(mealId.toString()).child(IMAGES)
-            .setValue(images)
 
-        storageInstanceRef.child(mealId.toString()).child(images[0].imageMealId.toString())
-            .putFile(images[0].imageURL.toUri())
+        Log.d("imagesfromdb",imagesfromdb.toString())
+        storageInstanceRef.child(mealId.toString()).delete().addOnSuccessListener {
+            Log.d("deletesuccess",mealId.toString())
+        }.addOnFailureListener {
+            Log.d("deletefailure", mealId.toString())
+        }
+
+        /*
+        if (images.isNotEmpty()) {
+            for (image in images) {
+                Log.d("imageforstorage", image.toString())
+                storageInstanceRef.child(mealId.toString()).child(image.imageId.toString())
+                    .putFile(image.imageURL.toUri())
+            }
+        }
+
+         */
     }
 
     //DELETE ALL
