@@ -42,10 +42,6 @@ class MealViewModel: ViewModel() {
             images.value = mealWithRelations!!.images
             functions.value = mealWithRelations!!.functions
             resources.value = mealWithRelations!!.resources
-
-            if (thisMeal.value!!.notes.isBlank()) {
-                thisMeal.value!!.notes = defaultNotes
-            }
         }
     }
 
@@ -59,12 +55,11 @@ class MealViewModel: ViewModel() {
         Log.d("edit meal", "clicked")
     }
 
+
     fun onNavigatingToEditMeal () {
         _onEditMealClick.value = false
     }
 
-    //DEFAULT NOTES TEXT
-    private val defaultNotes = "This meal has no notes."
 
     override fun onCleared() {
         super.onCleared()

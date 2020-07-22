@@ -1,16 +1,14 @@
 <resources>
     <string name="app_name">Brine</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="mealName">Meal Name</string>
-    <string name="mealFunction">Meal Function</string>
-    <string name="mealTitle">Meal Title</string>
-    <string name="mealResources">Your Notes</string>
-    <string name="functionTitleNewMeal">Meal Function</string>
-    <string name="newMealNameHint">Meal Name</string>
-    <string name="createMeal">Create Meal</string>
-    <string name="saveMeal">Save Meal</string>
+    <string name="dishName">Dish Name</string>
+    <string name="dishFunction">Dish Function</string>
+    <string name="dishTitle">Dish Title</string>
+    <string name="dishResources">Your Notes</string>
+    <string name="functionTitleNewDish">Dish Function</string>
+    <string name="newDishNameHint">Dish Name</string>
+    <string name="createDish">Create Dish</string>
+    <string name="saveDish">Save Dish</string>
     <string name="Protein">Protein</string>
     <string name="Vegetable">Vegetable</string>
     <string name="Starch">Starch</string>
@@ -19,16 +17,16 @@
     <string name="Dressing">Dressing</string>
     <string name="Beverage">Beverage</string>
     <string name="Dessert">Dessert</string>
-    <string name="deleteMeal">Delete Meal</string>
+    <string name="deleteDish">Delete Dish</string>
     <string name="welcomeMessage">Welcome! Brine is a ledger of your favorite food creations.</string>
-    <string name="saveFirstMeal">Save Your First Meal</string>
+    <string name="saveFirstDish">Save Your First Dish</string>
     <string name="pickImage">Add Photo</string>
     <string name="imageURL">Image URL</string>
     <string name="addResource">Add Resources Used (Books, Recipes)</string>
     <string name="delete">Delete</string>
     <string name="testURL">https://www.gimmesomeoven.com/homemade-pasta/</string>
-    <string name="defaultNotes">This meal has no notes.</string>
+    <string name="defaultNotes">This dish has no notes.</string>
     <string name="remove">Remove</string>
-    <string name="meal_images">Meal Images</string>
+    <string name="dish_images">Dish Images</string>
     <string name="add_images">Add Images</string>
 </resources>

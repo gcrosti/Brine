@@ -41,17 +41,19 @@ class FirebaseDataManager() {
 
     //IMAGES
     fun saveImages(mealId: Long, images: List<Image>) {
-        val imagesfromdb = databaseInstanceRef.child(mealId.toString())
         databaseInstanceRef.child(mealId.toString()).child(IMAGES)
+            .setValue(images)
 
-        Log.d("imagesfromdb",imagesfromdb.toString())
-        storageInstanceRef.child(mealId.toString()).delete().addOnSuccessListener {
-            Log.d("deletesuccess",mealId.toString())
-        }.addOnFailureListener {
-            Log.d("deletefailure", mealId.toString())
+        storageInstanceRef.child(mealId.toString()).listAll().addOnSuccessListener { listResult ->
+            val previousImages = listResult.items
+            for (image in previousImages) {
+                image.delete().addOnSuccessListener {
+                    Log.d("imagedelete", image.toString()) }
+                    .addOnFailureListener {
+                        Log.d("imagedelete","failed") }
+            }
         }
 
-        /*
         if (images.isNotEmpty()) {
             for (image in images) {
                 Log.d("imageforstorage", image.toString())
@@ -59,8 +61,6 @@ class FirebaseDataManager() {
                     .putFile(image.imageURL.toUri())
             }
         }
-
-         */
     }
 
     //DELETE ALL

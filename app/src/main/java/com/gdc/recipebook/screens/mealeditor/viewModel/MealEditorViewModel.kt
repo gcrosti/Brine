@@ -168,6 +168,7 @@ class MealEditorViewModel(): ViewModel() {
     }
 
     fun onSave() {
+        mealName = mealName.capitalize()
         uiScope.launch {
 
                 val thisMeal = Meal(
