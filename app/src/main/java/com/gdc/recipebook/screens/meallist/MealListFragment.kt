@@ -10,6 +10,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
+import com.gdc.recipebook.BrineApplication
 import com.gdc.recipebook.R
 import com.gdc.recipebook.database.Repository
 import com.gdc.recipebook.databinding.FragmentMealListBinding
@@ -35,14 +36,16 @@ class MealListFragment : Fragment() {
         val binding: FragmentMealListBinding = DataBindingUtil.inflate(
             inflater,R.layout.fragment_meal_list,container,false)
 
-        val viewModelFactory = MealListViewModelFactory()
+        val repository = (requireContext().applicationContext as BrineApplication).repository
+
+        val viewModelFactory = MealListViewModelFactory(repository)
         val mealListViewModel = viewModelFactory.create(MealListViewModel::class.java)
 
         binding.mealListViewModel = mealListViewModel
 
         val adapter = MealListAdapter(MealListListener { name -> navToMeal(name) })
 
-        Repository.mealsWithFunctions.observe(viewLifecycleOwner, Observer {
+        repository.mealsWithFunctions.observe(viewLifecycleOwner, Observer {
                 adapter.submitList(it)
                 Log.d("mealswithfunc submitted",it.toString())})
 

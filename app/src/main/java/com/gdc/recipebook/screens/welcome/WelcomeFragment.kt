@@ -9,8 +9,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
+import com.gdc.recipebook.BrineApplication
 import com.gdc.recipebook.R
-import com.gdc.recipebook.database.Repository
 import com.gdc.recipebook.databinding.FragmentWelcomeBinding
 import kotlinx.android.synthetic.main.view_newmeal_dialog.*
 
@@ -22,16 +22,19 @@ class WelcomeFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
+        val repository = (requireContext().applicationContext as BrineApplication).repository
+
         val binding: FragmentWelcomeBinding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_welcome,container,false)
 
         val viewModelFactory = WelcomeViewModelFactory()
         val welcomeViewModel = viewModelFactory.create(WelcomeViewModel::class.java)
 
+
         binding.welcomeViewModel = welcomeViewModel
         binding.lifecycleOwner = this
 
-        Repository.mealsWithFunctions.observe(viewLifecycleOwner, Observer {
+        repository.mealsWithFunctions.observe(viewLifecycleOwner, Observer {
             if (it != null) {
                 navToList()
             }

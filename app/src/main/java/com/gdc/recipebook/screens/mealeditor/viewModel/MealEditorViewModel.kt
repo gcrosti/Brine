@@ -6,7 +6,9 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.gdc.recipebook.database.ImagesFromEditor
 import com.gdc.recipebook.database.Repository
+import com.gdc.recipebook.database.ResourcesFromEditor
 import com.gdc.recipebook.database.dataclasses.*
 import com.gdc.recipebook.screens.mealeditor.resources.ResourceListAdapter
 import com.gdc.recipebook.screens.mealeditor.resources.ResourceListListener
@@ -16,25 +18,27 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class MealEditorViewModel(): ViewModel() {
+class MealEditorViewModel(private val repository: Repository): ViewModel() {
 
     //SET THREAD SCOPE
     private var viewModelJob = Job()
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
-    //CREATE A NEW MEALID OR FIND EXISTING DATA FOR THIS MEAL
+
     private var mealId = 0L
     private var isNew = false
     private var mealWithRelations: MealWithRelations? = null
+    private val imagesFromEditor = ImagesFromEditor()
+    private val resourcesFromEditor = ResourcesFromEditor()
 
 
-    fun setMealId() {
+    fun getMealData() {
         uiScope.launch {
-            val result = Repository.setMealId(mealName)
-            mealId = result.first
-            isNew = result.second
+            val result = repository.getMealIdFromLocal(mealName)
+            mealId = result.mealId
+            isNew = result.isNew
             if (!isNew) {
-                mealWithRelations = Repository.retrieveMealWithRelations(mealName)
+                mealWithRelations = repository.getMealWithRelationsFromLocal(mealName)
                 mealNotes.value = mealWithRelations!!.meal.notes
 
                 mealWithRelations!!.functions?.let {
@@ -44,15 +48,15 @@ class MealEditorViewModel(): ViewModel() {
                 mealWithRelations!!.images?.let {
                     _images.value = it
 
-                    //Remember images originally loaded to correctly remove if necessary
-                    setLoadedImages(it)
+                    imagesFromEditor.loadedImages = it.toMutableList()
+                    imagesFromEditor.savedImages = it.toMutableList()
                 }
 
                 mealWithRelations!!.resources?.let {
                     _resources.value = it
 
-                    // Remember resources originally loaded to correctly remove if necessary
-                    setLoadedResources(it)
+                    resourcesFromEditor.loadedResources = it.toMutableList()
+                    resourcesFromEditor.savedResources = it.toMutableList()
                 }
             }
         }
@@ -77,12 +81,10 @@ class MealEditorViewModel(): ViewModel() {
             mealNotes.value = s.toString() } }
 
 
-    //IMAGES LOGIC
+    //MEAL IMAGES LOGIC
     private var _images = MutableLiveData<MutableList<Image>>(mutableListOf())
     val images: LiveData<MutableList<Image>>
         get() = _images
-
-    private var onImagesChanged = false
 
     private var _onNewImageClick = MutableLiveData(false)
     val onNewImageClick: LiveData<Boolean>
@@ -96,35 +98,21 @@ class MealEditorViewModel(): ViewModel() {
         val images = _images.value
         images!!.add(Image(imageURL = url))
         _images.value = images
-        onImagesChanged = true
+        imagesFromEditor.savedImages.add(Image(imageURL = url))
     }
 
     fun removeImage(image: Image) {
         val images = _images.value
         images!!.remove(image)
         _images.value = images
-        onImagesChanged = true
-        Log.d("images after remove",_images.value.toString())
+        imagesFromEditor.savedImages.remove(image)
     }
-
-    private var loadedImages: MutableList<String>? = null
-    private fun setLoadedImages(images: List<Image>) {
-        loadedImages = mutableListOf()
-        for (image in images) {
-            loadedImages!!.add(image.imageURL)
-        }
-    }
-
-
 
 
     //MEAL RESOURCES LOGIC
     private var _onAddResourcesClick = MutableLiveData(false)
     val onAddResourcesClick: LiveData<Boolean>
         get() = _onAddResourcesClick
-
-    private var onResourcesChanged = false
-
 
     val adapter = ResourceListAdapter(ResourceListListener { resource -> removeResource(resource) })
 
@@ -138,23 +126,15 @@ class MealEditorViewModel(): ViewModel() {
 
     fun addNewResource(uri: String) {
         _resources.value?.add(Resource(resourceURL = uri))
-        onResourcesChanged = true
+
+        resourcesFromEditor.savedResources.add(Resource(resourceURL = uri))
     }
 
     private fun removeResource(resource: Resource) {
         _resources.value?.remove(resource)
         adapter.notifyDataSetChanged()
-        onResourcesChanged = true
-    }
 
-
-    private var loadedResources: List<String>? = null
-    private fun setLoadedResources(resources: List<Resource>) {
-        val incomingUrls = mutableListOf<String>()
-        for (resource in resources) {
-            incomingUrls.add(resource.resourceURL)
-        }
-        loadedResources = incomingUrls
+        resourcesFromEditor.savedResources.remove(resource)
     }
 
     //SAVE DATA LOGIC
@@ -177,32 +157,14 @@ class MealEditorViewModel(): ViewModel() {
                     notes = mealNotes.value!!
                 )
 
-            if(onImagesChanged) {
-                for(image in _images.value!!) {
-                    image.imageMealId = mealId
-                }
-            } else {_images.value = null}
-
-
-            if (onResourcesChanged) {
-                for (resource in _resources.value!!) {
-                    resource.resourceMealId = mealId
-                }
-            } else {_resources.value = null }
-
             _mealFunctions.value?.functionMealId = mealId
 
-            Repository.saveMealWithRelations(
+            repository.saveMealWithRelations(
                 meal = thisMeal,
-                loadedImages = loadedImages,
-                savedImages = images.value,
+                imagesFromEditor = imagesFromEditor,
                 functions = mealFunctions.value,
-                loadedResources = loadedResources,
-                savedResources = resources.value
+                resourcesFromEditor = resourcesFromEditor
             )
-
-            onImagesChanged = false
-            onResourcesChanged = false
         }
     }
 
@@ -219,7 +181,7 @@ class MealEditorViewModel(): ViewModel() {
     fun onDelete() {
         uiScope.launch {
 
-            Repository.deleteMealWithRelations(
+            repository.deleteMealWithRelations(
                 meal = mealWithRelations?.meal,
                 functions = mealWithRelations?.functions,
                 images = mealWithRelations?.images)

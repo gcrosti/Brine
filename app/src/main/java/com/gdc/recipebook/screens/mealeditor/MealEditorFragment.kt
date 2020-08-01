@@ -17,8 +17,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
+import com.gdc.recipebook.BrineApplication
 import com.gdc.recipebook.R
-import com.gdc.recipebook.database.MealRoomDatabase
 import com.gdc.recipebook.databinding.FragmentMealEditorBinding
 import com.gdc.recipebook.screens.mealeditor.images.HeaderListener
 import com.gdc.recipebook.screens.mealeditor.images.ImageListener
@@ -32,15 +32,15 @@ import com.gdc.recipebook.screens.mealeditor.viewModel.MealEditorViewModelFactor
 
 class MealEditorFragment: Fragment() {
 
-    //CREATE VIEWMODEL AND SET OBJECT RELATIONS
-    private val viewModelFactory = MealEditorViewModelFactory()
-    private val mealEditorViewModel = viewModelFactory.create(MealEditorViewModel::class.java)
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        val viewModelFactory = MealEditorViewModelFactory((requireContext().applicationContext as BrineApplication).repository)
+        val mealEditorViewModel = viewModelFactory.create(MealEditorViewModel::class.java)
 
         //CREATE BINDING OBJECT
         val binding: FragmentMealEditorBinding = DataBindingUtil.inflate(
@@ -54,7 +54,7 @@ class MealEditorFragment: Fragment() {
             mealEditorViewModel.mealName = nameFromArg
         }
 
-        mealEditorViewModel.setMealId()
+        mealEditorViewModel.getMealData()
 
         //BUTTON CLICK HANDLERS
 
@@ -97,7 +97,6 @@ class MealEditorFragment: Fragment() {
         val getUrlFromIntent: () -> Unit = {
             val urlString = activity?.intent?.extras?.getString(Intent.EXTRA_TEXT)
             urlString?.let {
-                Log.d("urltoadd", it)
                 mealEditorViewModel.addNewResource(it)
                 mealEditorViewModel.adapter.notifyDataSetChanged()
             }
