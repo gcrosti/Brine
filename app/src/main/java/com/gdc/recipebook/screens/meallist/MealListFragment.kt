@@ -14,6 +14,7 @@ import com.gdc.recipebook.BrineApplication
 import com.gdc.recipebook.R
 import com.gdc.recipebook.database.Repository
 import com.gdc.recipebook.databinding.FragmentMealListBinding
+import com.gdc.recipebook.screens.modules.createDishDialog
 import kotlinx.android.synthetic.main.view_newmeal_dialog.*
 
 // TODO: Rename parameter arguments, choose names that match
@@ -46,8 +47,8 @@ class MealListFragment : Fragment() {
         val adapter = MealListAdapter(MealListListener { name -> navToMeal(name) })
 
         repository.mealsWithFunctions.observe(viewLifecycleOwner, Observer {
-                adapter.submitList(it)
-                Log.d("mealswithfunc submitted",it.toString())})
+            adapter.submitList(it)
+        })
 
         binding.recipeListRecyclerView.adapter = adapter
 
@@ -56,9 +57,10 @@ class MealListFragment : Fragment() {
 
         mealListViewModel.showNewMealDialog.observe(viewLifecycleOwner, Observer {
             if (it == true) {
-                    val dialog = createRecipeDialog()
-                    dialog.show()
+                view?.let {view ->
+                    createDishDialog(view,repository).show()
                 }
+            }
 
         })
 
@@ -67,51 +69,12 @@ class MealListFragment : Fragment() {
         return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment MealListFragment.
-         */
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            MealListFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
 
-    private fun createRecipeDialog(): Dialog {
-        lateinit var dialog: Dialog
-        this.context?.let {
-            dialog = Dialog(it)
-            dialog.setContentView(R.layout.view_newmeal_dialog)
-            dialog.createRecipeButton.setOnClickListener {
-                val editText = dialog.recipeNameEditor.text.toString()
-                navToEditor(editText)
-                dialog.dismiss()
-            }
-        }
-        return dialog
-    }
-
-    private fun navToEditor(name:String) {
-        val action =
-            MealListFragmentDirections.actionRecipeListFragmentToRecipeEditorFragment()
-        action.mealName = name
-        view?.findNavController()?.navigate(action)
-    }
 
     private fun navToMeal(name:String) {
         val action =
             MealListFragmentDirections.actionRecipeListFragmentToRecipeFragment()
         action.mealName = name
-        Log.d("navigating to", name)
         view?.findNavController()?.navigate(action)
     }
 }

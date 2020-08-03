@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.gdc.recipebook.database.dataclasses.*
 import kotlinx.coroutines.*
+import java.util.*
 
 class Repository private constructor(application: Application): RepositoryInterface {
 
@@ -179,6 +180,15 @@ class Repository private constructor(application: Application): RepositoryInterf
             }
 
         }
+    }
+
+    override fun isMealNameTaken(name: String): Boolean {
+        mealsWithFunctions.value?.forEach {
+            if (it.meal.name.toLowerCase(Locale.ROOT) == name.toLowerCase(Locale.ROOT)) {
+                return true
+            }
+        }
+        return false
     }
 
     companion object {

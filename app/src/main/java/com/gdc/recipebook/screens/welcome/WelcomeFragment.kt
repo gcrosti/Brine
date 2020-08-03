@@ -12,6 +12,7 @@ import androidx.navigation.findNavController
 import com.gdc.recipebook.BrineApplication
 import com.gdc.recipebook.R
 import com.gdc.recipebook.databinding.FragmentWelcomeBinding
+import com.gdc.recipebook.screens.modules.createDishDialog
 import kotlinx.android.synthetic.main.view_newmeal_dialog.*
 
 class WelcomeFragment: Fragment() {
@@ -42,31 +43,14 @@ class WelcomeFragment: Fragment() {
 
         welcomeViewModel.onNewMealClick.observe(viewLifecycleOwner, Observer {
             if (it) {
-                createRecipeDialog().show()
+
+                view?.let {view ->
+                    createDishDialog(view)
+                }
             }
         })
 
         return binding.root
-    }
-
-    private fun createRecipeDialog(): Dialog {
-        lateinit var dialog: Dialog
-        this.context?.let {
-            dialog = Dialog(it)
-            dialog.setContentView(R.layout.view_newmeal_dialog)
-            dialog.createRecipeButton.setOnClickListener {
-                val editText = dialog.recipeNameEditor.text.toString()
-                navToEditor(editText)
-                dialog.dismiss()
-            }
-        }
-        return dialog
-    }
-
-    private fun navToEditor(name:String) {
-        val action = WelcomeFragmentDirections.actionWelcomeFragmentToRecipeEditorFragment()
-        action.mealName = name
-        view?.findNavController()?.navigate(action)
     }
 
     private fun navToList() {

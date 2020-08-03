@@ -11,12 +11,3 @@ data class MealWithFunctions (
     )
     var mealFunctions: MealFunction?
 )
-
-data class MealWithResources(
-    @Embedded val mealWithFunctions: MealWithFunctions,
-    @Relation(
-        parentColumn = "mealId",
-        entityColumn = "resourceMealId"
-    )
-    val resources: MutableList<Resource> = mutableListOf()
-)

@@ -64,6 +64,7 @@
     </fragment>
 
     <action android:id="@+id/action_global_recipeListFragment" app:destination="@id/recipeListFragment"/>
+    <action android:id="@+id/action_global_recipeEditorFragment" app:destination="@+id/recipeEditorFragment"/>
 
 
 </navigation>

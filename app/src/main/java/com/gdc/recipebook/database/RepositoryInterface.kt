@@ -16,6 +16,8 @@ interface RepositoryInterface {
     suspend fun deleteMealWithRelations( meal: Meal? = null,
                                          functions: MealFunction? = null,
                                          images: List<Image>? = null)
+
+    fun isMealNameTaken(name:String): Boolean
 }
 
 
