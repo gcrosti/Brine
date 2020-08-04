@@ -20,11 +20,13 @@ class Repository private constructor(application: Application): RepositoryInterf
         get() = _mealsWithFunctions
 
 
+
     init {
         updateMealsWithFunctions()
     }
 
-    private fun updateMealsWithFunctions() {
+    fun updateMealsWithFunctions() {
+
         uiScope.launch {
             _mealsWithFunctions.value = getAllMealsWithFunctionsFromDatabase()
         }
@@ -167,6 +169,7 @@ class Repository private constructor(application: Application): RepositoryInterf
             meal?.let {
                 roomDatabaseDAO.deleteMeal(meal)
                 firebaseDataManager.deleteMeal(meal)
+
             }
 
             functions?.let {
@@ -178,8 +181,8 @@ class Repository private constructor(application: Application): RepositoryInterf
                     roomDatabaseDAO.deleteImage(image)
                 }
             }
-
         }
+
     }
 
     override fun isMealNameTaken(name: String): Boolean {

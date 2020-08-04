@@ -2,6 +2,7 @@ package com.gdc.recipebook.screens.welcome
 
 import android.app.Dialog
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -43,9 +44,9 @@ class WelcomeFragment: Fragment() {
 
         welcomeViewModel.onNewMealClick.observe(viewLifecycleOwner, Observer {
             if (it) {
-
+                Log.d("newmealclick","welcome view")
                 view?.let {view ->
-                    createDishDialog(view)
+                    createDishDialog(view).show()
                 }
             }
         })

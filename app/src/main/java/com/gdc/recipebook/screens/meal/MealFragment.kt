@@ -48,13 +48,11 @@ class MealFragment: Fragment() {
 
         //IMAGES
         mealViewModel.images.observe(viewLifecycleOwner, Observer { imageList ->
-            if (imageList != null) {
-                if (imageList.isNotEmpty()) {
-                    val adapter = context?.let { ImageSliderAdapter(it,imageList) }
-                    binding.imageViewPager.adapter = adapter
-                    Log.d("images submitted", imageList.toString())
-                }
-            }
+
+                Log.d("imagelistsubmitted",imageList.toString())
+                val adapter = context?.let { ImageSliderAdapter(it,imageList) }
+                binding.imageViewPager.adapter = adapter
+
         })
 
 

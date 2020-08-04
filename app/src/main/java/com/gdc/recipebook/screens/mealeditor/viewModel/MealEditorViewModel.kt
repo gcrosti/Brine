@@ -95,10 +95,12 @@ class MealEditorViewModel(private val repository: Repository): ViewModel() {
     }
 
     fun addNewImageURL(url: String) {
-        val images = _images.value
-        images!!.add(Image(imageURL = url))
-        _images.value = images
-        imagesFromEditor.savedImages.add(Image(imageURL = url))
+        if (url.isNotBlank()) {
+            val images = _images.value
+            images!!.add(Image(imageURL = url))
+            _images.value = images
+            imagesFromEditor.savedImages.add(Image(imageURL = url))
+        }
     }
 
     fun removeImage(image: Image) {

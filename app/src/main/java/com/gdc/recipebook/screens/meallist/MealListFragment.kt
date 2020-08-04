@@ -43,11 +43,12 @@ class MealListFragment : Fragment() {
         val mealListViewModel = viewModelFactory.create(MealListViewModel::class.java)
 
         binding.mealListViewModel = mealListViewModel
+        repository.updateMealsWithFunctions()
 
         val adapter = MealListAdapter(MealListListener { name -> navToMeal(name) })
 
         repository.mealsWithFunctions.observe(viewLifecycleOwner, Observer {
-            adapter.submitList(it)
+           adapter.submitList(it)
         })
 
         binding.recipeListRecyclerView.adapter = adapter
