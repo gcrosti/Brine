@@ -23,6 +23,8 @@ import com.gdc.recipebook.databinding.FragmentMealEditorBinding
 import com.gdc.recipebook.screens.mealeditor.images.HeaderListener
 import com.gdc.recipebook.screens.mealeditor.images.ImageListener
 import com.gdc.recipebook.screens.mealeditor.resources.ResourceBroadcastReceiver
+import com.gdc.recipebook.screens.mealeditor.resources.ResourceListAdapter
+import com.gdc.recipebook.screens.mealeditor.resources.ResourceListListener
 import com.gdc.recipebook.screens.mealeditor.resources.TextToBitmap
 import com.gdc.recipebook.screens.mealeditor.utils.EditorLifecycleObserver
 import com.gdc.recipebook.screens.mealeditor.utils.PhotoActivityResultContract
@@ -54,7 +56,7 @@ class MealEditorFragment: Fragment() {
             mealEditorViewModel.mealName = nameFromArg
         }
 
-        mealEditorViewModel.getMealData()
+        mealEditorViewModel.getDishData()
 
         //BUTTON CLICK HANDLERS
 
@@ -91,14 +93,16 @@ class MealEditorFragment: Fragment() {
 
 
         //RESOURCES LOGIC
-        binding.resourcesRecyclerView.adapter = mealEditorViewModel.adapter
+        val adapter = ResourceListAdapter(ResourceListListener { resource -> mealEditorViewModel.removeResource(resource) })
+        binding.resourcesRecyclerView.adapter = adapter
+        mealEditorViewModel.setAdapter(adapter)
 
         // Get URL from Intent when activity resumed
         val getUrlFromIntent: () -> Unit = {
             val urlString = activity?.intent?.extras?.getString(Intent.EXTRA_TEXT)
             urlString?.let {
                 mealEditorViewModel.addNewResource(it)
-                mealEditorViewModel.adapter.notifyDataSetChanged()
+                adapter.notifyDataSetChanged()
             }
         }
 

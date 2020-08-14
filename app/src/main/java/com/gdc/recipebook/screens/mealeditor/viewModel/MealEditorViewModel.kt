@@ -6,8 +6,10 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.gdc.recipebook.database.ImagesFromEditor
 import com.gdc.recipebook.database.Repository
+import com.gdc.recipebook.database.RepositoryInterface
 import com.gdc.recipebook.database.ResourcesFromEditor
 import com.gdc.recipebook.database.dataclasses.*
 import com.gdc.recipebook.screens.mealeditor.resources.ResourceListAdapter
@@ -18,11 +20,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class MealEditorViewModel(private val repository: Repository): ViewModel() {
+class MealEditorViewModel(private val repository: RepositoryInterface): ViewModel() {
 
     //SET THREAD SCOPE
     private var viewModelJob = Job()
-    private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
+    //private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
 
     private var mealId = 0L
@@ -32,8 +34,8 @@ class MealEditorViewModel(private val repository: Repository): ViewModel() {
     private val resourcesFromEditor = ResourcesFromEditor()
 
 
-    fun getMealData() {
-        uiScope.launch {
+    fun getDishData() {
+        viewModelScope.launch {
             val result = repository.getMealIdFromLocal(mealName)
             mealId = result.mealId
             isNew = result.isNew
@@ -116,7 +118,11 @@ class MealEditorViewModel(private val repository: Repository): ViewModel() {
     val onAddResourcesClick: LiveData<Boolean>
         get() = _onAddResourcesClick
 
-    val adapter = ResourceListAdapter(ResourceListListener { resource -> removeResource(resource) })
+    private lateinit var adapter: ResourceListAdapter
+
+    fun setAdapter(ad: ResourceListAdapter) {
+        adapter = ad
+    }
 
     private var _resources = MutableLiveData(mutableListOf<Resource>())
     val resources: LiveData<MutableList<Resource>>
@@ -132,7 +138,7 @@ class MealEditorViewModel(private val repository: Repository): ViewModel() {
         resourcesFromEditor.savedResources.add(Resource(resourceURL = uri))
     }
 
-    private fun removeResource(resource: Resource) {
+    fun removeResource(resource: Resource) {
         _resources.value?.remove(resource)
         adapter.notifyDataSetChanged()
 
@@ -151,7 +157,7 @@ class MealEditorViewModel(private val repository: Repository): ViewModel() {
 
     fun onSave() {
         mealName = mealName.capitalize()
-        uiScope.launch {
+        viewModelScope.launch {
 
                 val thisMeal = Meal(
                     mealId = mealId,
@@ -181,7 +187,7 @@ class MealEditorViewModel(private val repository: Repository): ViewModel() {
     }
 
     fun onDelete() {
-        uiScope.launch {
+        viewModelScope.launch {
 
             repository.deleteMealWithRelations(
                 meal = mealWithRelations?.meal,
