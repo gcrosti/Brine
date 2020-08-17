@@ -4,6 +4,7 @@ import com.gdc.recipebook.data.FakeRepository
 import org.junit.Rule
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
+import com.gdc.recipebook.MainCoroutineRule
 import com.gdc.recipebook.database.ImagesFromEditor
 import com.gdc.recipebook.database.RepositoryInterface
 import com.gdc.recipebook.database.dataclasses.Image
@@ -11,6 +12,7 @@ import com.gdc.recipebook.database.dataclasses.Meal
 import com.gdc.recipebook.database.dataclasses.MealFunction
 import com.gdc.recipebook.database.dataclasses.MealWithRelations
 import com.gdc.recipebook.screens.mealeditor.viewModel.MealEditorViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
@@ -35,6 +37,9 @@ class EditorViewModelTest {
 
     }
 
+    @ExperimentalCoroutinesApi
+    @get:Rule
+    var mainCoroutineRule = MainCoroutineRule()
 
     @Test
     fun getDishData_loadsExistingDish() {
@@ -57,9 +62,10 @@ class EditorViewModelTest {
         editorViewModel.getDishData()
         editorViewModel.mealName = dish.name
 
+
         //Then all of the correct data is loaded
         assertThat(editorViewModel.mealName, `is`(dish.name))
-        //assertThat(editorViewModel.mealNotes.value, `is`(dish.notes))
+        assertThat(editorViewModel.mealNotes.value, `is`(dish.notes))
         assertThat(editorViewModel.images.value, `is`(mealWithRelations.images))
     }
 }

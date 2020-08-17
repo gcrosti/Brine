@@ -1,5 +1,6 @@
 package com.gdc.recipebook.data
 
+import android.util.Log
 import com.gdc.recipebook.database.*
 import com.gdc.recipebook.database.dataclasses.Image
 import com.gdc.recipebook.database.dataclasses.Meal
@@ -19,6 +20,8 @@ class FakeRepository(): RepositoryInterface {
 
     override suspend fun getMealWithRelationsFromLocal(mealName: String): MealWithRelations {
         return mealWithRelations
+        System.out.println("Meal from fake")
+        System.out.println(mealWithRelations.meal.toString())
     }
 
     override suspend fun saveMealWithRelations(
@@ -28,12 +31,19 @@ class FakeRepository(): RepositoryInterface {
         resourcesFromEditor: ResourcesFromEditor?
     ) {
         mealWithRelations = MealWithRelations(meal)
+
+        System.out.println("MealAfterFakeSave")
+        System.out.println(mealWithRelations.meal.toString())
+
+
         functions?.let {
             mealWithRelations.functions = functions
         }
         imagesFromEditor?.let {
             val deletions = findImagesForDeletion(it)
             val insertions = findImagesForInsertion(it)
+            System.out.println("Images for insertion from fake")
+            System.out.println(insertions.toString())
 
             deletions?.let {
                 for (image in it) {
@@ -42,10 +52,13 @@ class FakeRepository(): RepositoryInterface {
             }
 
             insertions?.let {
+                mealWithRelations.images = mutableListOf<Image>()
                 for (image in it) {
                     image.imageMealId = meal.mealId
                     mealWithRelations.images?.add(image)
                 }
+                System.out.println("Images after insertions in fake")
+                System.out.println(mealWithRelations.images.toString())
             }
         }
     }
