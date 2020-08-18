@@ -63,7 +63,7 @@ class MealEditorFragment: Fragment() {
         mealEditorViewModel.onSaveMealClick.observe(viewLifecycleOwner,  Observer {
             if (it == true) {
 
-                mealEditorViewModel.onSave()
+                mealEditorViewModel.saveDishData()
                 navToMeal(mealEditorViewModel.mealName)
             }
         })
@@ -85,7 +85,6 @@ class MealEditorFragment: Fragment() {
         //EDITABLE OBSERVERS
         binding.editName.addTextChangedListener(mealEditorViewModel.nameTextWatcher)
         binding.editNotes.addTextChangedListener(mealEditorViewModel.notesTextWatcher)
-        //binding.imageURI.addTextChangedListener(mealEditorViewModel.imageTextWatcher)
 
         binding.mealEditorViewModel = mealEditorViewModel
         binding.lifecycleOwner = this

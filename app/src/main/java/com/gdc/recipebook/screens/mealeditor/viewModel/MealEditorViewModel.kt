@@ -24,7 +24,6 @@ class MealEditorViewModel(private val repository: RepositoryInterface): ViewMode
 
     //SET THREAD SCOPE
     private var viewModelJob = Job()
-    //private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
 
     private var mealId = 0L
@@ -101,7 +100,6 @@ class MealEditorViewModel(private val repository: RepositoryInterface): ViewMode
             val images = _images.value
             images!!.add(Image(imageURL = url))
             _images.value = images
-            imagesFromEditor.savedImages.add(Image(imageURL = url))
         }
     }
 
@@ -109,7 +107,6 @@ class MealEditorViewModel(private val repository: RepositoryInterface): ViewMode
         val images = _images.value
         images!!.remove(image)
         _images.value = images
-        imagesFromEditor.savedImages.remove(image)
     }
 
 
@@ -134,15 +131,11 @@ class MealEditorViewModel(private val repository: RepositoryInterface): ViewMode
 
     fun addNewResource(uri: String) {
         _resources.value?.add(Resource(resourceURL = uri))
-
-        resourcesFromEditor.savedResources.add(Resource(resourceURL = uri))
     }
 
     fun removeResource(resource: Resource) {
         _resources.value?.remove(resource)
         adapter.notifyDataSetChanged()
-
-        resourcesFromEditor.savedResources.remove(resource)
     }
 
     //SAVE DATA LOGIC
@@ -155,26 +148,34 @@ class MealEditorViewModel(private val repository: RepositoryInterface): ViewMode
         _onSaveMealClick.value = true
     }
 
-    fun onSave() {
-        mealName = mealName.capitalize()
+    fun saveDishData() {
+
+        val dataForRepo = prepareDataForRepo()
+
         viewModelScope.launch {
-
-                val thisMeal = Meal(
-                    mealId = mealId,
-                    name = mealName,
-                    notes = mealNotes.value!!
-                )
-
-            _mealFunctions.value?.functionMealId = mealId
-
             repository.saveMealWithRelations(
-                meal = thisMeal,
-                imagesFromEditor = imagesFromEditor,
-                functions = mealFunctions.value,
-                resourcesFromEditor = resourcesFromEditor
+                meal = dataForRepo.dish,
+                imagesFromEditor = dataForRepo.images,
+                functions = dataForRepo.functions,
+                resourcesFromEditor = dataForRepo.resources
             )
         }
     }
+
+    fun prepareDataForRepo(): DataForRepo {
+        mealName = mealName.capitalize()
+        imagesFromEditor.savedImages = images.value!!
+        resourcesFromEditor.savedResources = resources.value!!
+        _mealFunctions.value?.functionMealId = mealId
+        val thisMeal = Meal(
+            mealId = mealId,
+            name = mealName,
+            notes = mealNotes.value!!
+        )
+        return DataForRepo(thisMeal,imagesFromEditor,mealFunctions.value,resourcesFromEditor)
+    }
+
+
 
 
     //DELETE DATA LOGIC
@@ -265,6 +266,3 @@ class MealEditorViewModel(private val repository: RepositoryInterface): ViewMode
     }
 
 }
-
-
-
