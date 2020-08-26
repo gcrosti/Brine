@@ -3,10 +3,9 @@ package com.gdc.recipebook.DishEditor
 import com.gdc.recipebook.data.FakeRepository
 import org.junit.Rule
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.MutableLiveData
 import com.gdc.recipebook.MainCoroutineRule
-import com.gdc.recipebook.database.ImagesFromEditor
-import com.gdc.recipebook.database.RepositoryInterface
+import com.gdc.recipebook.database.interfaces.ImagesFromEditor
+import com.gdc.recipebook.database.interfaces.RepositoryInterface
 import com.gdc.recipebook.database.dataclasses.*
 import com.gdc.recipebook.screens.mealeditor.viewModel.MealEditorViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -53,7 +52,9 @@ class EditorViewModelTest {
         runBlocking {
             dishesRepository.saveMealWithRelations(
                 meal = dish,
-                imagesFromEditor = ImagesFromEditor(savedImages = images),
+                imagesFromEditor = ImagesFromEditor(
+                    savedImages = images
+                ),
                 functions = functions)
         }
 
@@ -73,7 +74,9 @@ class EditorViewModelTest {
         runBlocking {
             dishesRepository.saveMealWithRelations(
                 meal = dish,
-                imagesFromEditor = ImagesFromEditor(savedImages = images),
+                imagesFromEditor = ImagesFromEditor(
+                    savedImages = images
+                ),
                 functions = functions)
         }
         val testNotes = "new test note"

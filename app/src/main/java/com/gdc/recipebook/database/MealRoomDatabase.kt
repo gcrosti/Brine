@@ -5,6 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.gdc.recipebook.database.dataclasses.*
+import com.gdc.recipebook.database.interfaces.RoomDatabaseDAO
 
 
 @Database(entities = [Image::class, Meal::class,MealFunction::class,Resource::class],version = 5,exportSchema = false)

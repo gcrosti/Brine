@@ -1,7 +1,7 @@
 package com.gdc.recipebook.database.dataclasses
 
-import com.gdc.recipebook.database.ImagesFromEditor
-import com.gdc.recipebook.database.ResourcesFromEditor
+import com.gdc.recipebook.database.interfaces.ImagesFromEditor
+import com.gdc.recipebook.database.interfaces.ResourcesFromEditor
 
 data class MealWithRelations(
     var meal: Meal,

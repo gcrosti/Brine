@@ -1,21 +1,26 @@
 package com.gdc.recipebook.data
 
-import android.util.Log
 import com.gdc.recipebook.database.*
 import com.gdc.recipebook.database.dataclasses.Image
 import com.gdc.recipebook.database.dataclasses.Meal
 import com.gdc.recipebook.database.dataclasses.MealFunction
 import com.gdc.recipebook.database.dataclasses.MealWithRelations
+import com.gdc.recipebook.database.interfaces.ImagesFromEditor
+import com.gdc.recipebook.database.interfaces.RepositoryInterface
+import com.gdc.recipebook.database.interfaces.ResourcesFromEditor
+import com.gdc.recipebook.database.interfaces.ResultFromGetMealId
 
-class FakeRepository(): RepositoryInterface {
+class FakeRepository():
+    RepositoryInterface {
 
     lateinit var mealWithRelations: MealWithRelations
     var testNewMeal = false
 
-    override suspend fun getMealIdFromLocal(name: String): ResultFromGetMealId {
+    override suspend fun getRoomMealId(name: String): ResultFromGetMealId {
         return ResultFromGetMealId(
             isNew = testNewMeal,
-            mealId = mealWithRelations.meal.mealId)
+            mealId = mealWithRelations.meal.mealId
+        )
     }
 
     override suspend fun getMealWithRelationsFromLocal(mealName: String): MealWithRelations {

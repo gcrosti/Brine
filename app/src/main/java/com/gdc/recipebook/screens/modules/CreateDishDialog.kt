@@ -6,7 +6,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.navigation.Navigation
 import com.gdc.recipebook.R
-import com.gdc.recipebook.database.RepositoryInterface
+import com.gdc.recipebook.database.interfaces.RepositoryInterface
 import kotlinx.android.synthetic.main.view_newmeal_dialog.*
 
 fun createDishDialog(view: View, repository: RepositoryInterface? = null): Dialog {

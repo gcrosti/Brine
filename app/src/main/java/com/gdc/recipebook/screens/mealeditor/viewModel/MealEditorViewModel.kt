@@ -2,21 +2,16 @@ package com.gdc.recipebook.screens.mealeditor.viewModel
 
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gdc.recipebook.database.ImagesFromEditor
-import com.gdc.recipebook.database.Repository
-import com.gdc.recipebook.database.RepositoryInterface
-import com.gdc.recipebook.database.ResourcesFromEditor
+import com.gdc.recipebook.database.interfaces.ImagesFromEditor
+import com.gdc.recipebook.database.interfaces.RepositoryInterface
+import com.gdc.recipebook.database.interfaces.ResourcesFromEditor
 import com.gdc.recipebook.database.dataclasses.*
 import com.gdc.recipebook.screens.mealeditor.resources.ResourceListAdapter
-import com.gdc.recipebook.screens.mealeditor.resources.ResourceListListener
 import com.gdc.recipebook.screens.mealeditor.utils.flipBoolean
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
@@ -29,13 +24,16 @@ class MealEditorViewModel(private val repository: RepositoryInterface): ViewMode
     private var mealId = 0L
     private var isNew = false
     private var mealWithRelations: MealWithRelations? = null
-    private val imagesFromEditor = ImagesFromEditor()
-    private val resourcesFromEditor = ResourcesFromEditor()
+    private val imagesFromEditor =
+        ImagesFromEditor()
+    private val resourcesFromEditor =
+        ResourcesFromEditor()
 
 
     fun getDishData() {
+
         viewModelScope.launch {
-            val result = repository.getMealIdFromLocal(mealName)
+            val result = repository.getRoomMealId(mealName)
             mealId = result.mealId
             isNew = result.isNew
             if (!isNew) {

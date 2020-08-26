@@ -2,6 +2,8 @@ package com.gdc.recipebook.database
 
 import com.gdc.recipebook.database.dataclasses.Image
 import com.gdc.recipebook.database.dataclasses.Resource
+import com.gdc.recipebook.database.interfaces.ImagesFromEditor
+import com.gdc.recipebook.database.interfaces.ResourcesFromEditor
 
 
 fun findImagesForDeletion(imagesFromEditor: ImagesFromEditor): List<Image>? {

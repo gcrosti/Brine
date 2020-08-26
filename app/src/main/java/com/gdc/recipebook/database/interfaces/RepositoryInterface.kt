@@ -1,10 +1,10 @@
-package com.gdc.recipebook.database
+package com.gdc.recipebook.database.interfaces
 
 import com.gdc.recipebook.database.dataclasses.*
 
 interface RepositoryInterface {
 
-    suspend fun getMealIdFromLocal(name:String): ResultFromGetMealId
+    suspend fun getRoomMealId(name:String): ResultFromGetMealId
 
     suspend fun getMealWithRelationsFromLocal(mealName: String): MealWithRelations
 

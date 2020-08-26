@@ -1,4 +1,4 @@
-package com.gdc.recipebook.database
+package com.gdc.recipebook.database.interfaces
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

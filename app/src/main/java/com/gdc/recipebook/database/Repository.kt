@@ -1,19 +1,19 @@
 package com.gdc.recipebook.database
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.gdc.recipebook.database.dataclasses.*
+import com.gdc.recipebook.database.interfaces.*
 import kotlinx.coroutines.*
 import java.util.*
 
-class Repository private constructor(application: Application): RepositoryInterface {
+class Repository(
+    private val roomDataManager: IRoomDataManager,
+    private val firebaseDataManager: FirebaseDataManager = FirebaseDataManager(),
+    private val uiScope: CoroutineScope = CoroutineScope(Dispatchers.Main + Job())):
+    RepositoryInterface {
 
-    private var roomDatabaseDAO: RoomDatabaseDAO = MealRoomDatabase.getInstance(application.applicationContext).databaseDAO
-    private val repoJob = Job()
-    private val uiScope = CoroutineScope(Dispatchers.Main + repoJob)
-    private val firebaseDataManager = FirebaseDataManager()
 
     private var _mealsWithFunctions = MutableLiveData<List<MealWithFunctions>?>()
     val mealsWithFunctions: LiveData<List<MealWithFunctions>?>
@@ -26,40 +26,13 @@ class Repository private constructor(application: Application): RepositoryInterf
     }
 
     fun updateMealsWithFunctions() {
-
         uiScope.launch {
-            _mealsWithFunctions.value = getAllMealsWithFunctionsFromDatabase()
+            _mealsWithFunctions.value = roomDataManager.getMealsFunctions()
         }
     }
 
-    private suspend fun getAllMealsWithFunctionsFromDatabase(): List<MealWithFunctions>? {
-        return withContext(Dispatchers.IO) {
-            var data: List<MealWithFunctions>? = roomDatabaseDAO.getAllMealsWithFunctions()
-            if (data.isNullOrEmpty()) {
-                data = null
-            } else {
-                data = data.sortedBy { it.meal.name  }
-            }
-
-            data
-        }
-    }
-
-    //Save Meal
-    override suspend fun getMealIdFromLocal(name: String): ResultFromGetMealId {
-        return withContext(Dispatchers.IO) {
-            var isNew = false
-            val mealId: Long
-            var meal = roomDatabaseDAO.getMealFromName(name)
-            if (meal == null) {
-                isNew = true
-                meal = Meal(name = name)
-                mealId = roomDatabaseDAO.insertMeal(meal)
-            } else {
-                mealId = meal.mealId
-            }
-            ResultFromGetMealId(isNew,mealId)
-        }
+    override suspend fun getRoomMealId(name:String): ResultFromGetMealId {
+        return roomDataManager.getRoomMealId(name)
     }
 
     override suspend fun saveMealWithRelations(meal: Meal,
@@ -67,51 +40,35 @@ class Repository private constructor(application: Application): RepositoryInterf
                                                imagesFromEditor: ImagesFromEditor?,
                                                resourcesFromEditor: ResourcesFromEditor?) {
 
-        withContext(Dispatchers.IO) {
-            meal.let {
-                roomDatabaseDAO.insertMeal(it)
+        roomDataManager.insertMeal(meal)
+
+        functions?.let {
+            roomDataManager.insertFunctions(it)
+        }
+
+        imagesFromEditor?.let {
+            val deletions = findImagesForDeletion(it)
+            val insertions = findImagesForInsertion(it)
+
+            deletions?.let {images ->
+                roomDataManager.deleteImages(images)
             }
 
-            functions?.let {
-                roomDatabaseDAO.insertFunction(it)
+            insertions?.let { images ->
+                roomDataManager.insertImages(images)
+            }
+        }
+
+        resourcesFromEditor?.let {
+            val deletions = findResourcesForDeletion(it)
+            val insertions = findResourcesForInsertion(it)
+
+            deletions?.let { resources ->
+                roomDataManager.deleteResources(resources)
             }
 
-            imagesFromEditor?.let {
-                val deletions = findImagesForDeletion(it)
-                val insertions = findImagesForInsertion(it)
-                Log.d("img insertions",insertions.toString())
-                Log.d("img deletions",deletions.toString())
-
-                deletions?.let {
-                    for (image in it) {
-                        roomDatabaseDAO.deleteImage(image)
-                    }
-                }
-
-                insertions?.let {
-                    for (image in it) {
-                        image.imageMealId = meal.mealId
-                        roomDatabaseDAO.insertImage(image)
-                    }
-                }
-            }
-
-            resourcesFromEditor?.let {
-                val deletions = findResourcesForDeletion(it)
-                val insertions = findResourcesForInsertion(it)
-
-                deletions?.let {
-                    for (resource in it) {
-                        roomDatabaseDAO.deleteResource(resource)
-                    }
-                }
-
-                insertions?.let {
-                    for(resource in it) {
-                        resource.resourceMealId = meal.mealId
-                        roomDatabaseDAO.insertResource(resource)
-                    }
-                }
+            insertions?.let { resources ->
+                roomDataManager.insertResources(resources)
             }
         }
 
@@ -119,44 +76,37 @@ class Repository private constructor(application: Application): RepositoryInterf
     }
 
     private suspend fun saveMealWithRelationsToRemote(mealId: Long) {
-        withContext(Dispatchers.IO) {
+        val meal = roomDataManager.getMealFromId(mealId)
+        val resources = roomDataManager.getResourcesFromId(mealId)
+        val functions = roomDataManager.getFunctionsFromId(mealId)
+        val images = roomDataManager.getImagesFromId(mealId)
 
-            val meal = roomDatabaseDAO.getMealFromId(mealId)
-            val resources = roomDatabaseDAO.getResourcesFromId(mealId)
-            val functions = roomDatabaseDAO.getFunctionsFromId(mealId)
-            val images = roomDatabaseDAO.getImagesFromId(mealId)
-
-            firebaseDataManager.saveMeal(meal)
-            firebaseDataManager.saveFunctions(functions)
-            firebaseDataManager.saveResources(mealId,resources)
-            firebaseDataManager.saveImages(mealId,images)
-
-        }
+        firebaseDataManager.saveMeal(meal)
+        firebaseDataManager.saveFunctions(functions)
+        firebaseDataManager.saveResources(mealId,resources)
+        firebaseDataManager.saveImages(mealId,images)
     }
 
     override suspend fun getMealWithRelationsFromLocal(mealName:String): MealWithRelations {
-        return withContext(Dispatchers.IO) {
-            val meal = roomDatabaseDAO.getMealFromName(mealName)
-            val functions = roomDatabaseDAO.getFunctionsFromId(meal.mealId)
-            val images = roomDatabaseDAO.getImagesFromId(meal.mealId)
-            val resources = roomDatabaseDAO.getResourcesFromId(meal.mealId)
-            val mealWithRelations = MealWithRelations(meal)
+        val meal = roomDataManager.getMealFromName(mealName)
+        val functions = roomDataManager.getFunctionsFromId(meal.mealId)
+        val images = roomDataManager.getImagesFromId(meal.mealId)
+        val resources = roomDataManager.getResourcesFromId(meal.mealId)
+        val mealWithRelations = MealWithRelations(meal)
 
-            functions?.let {
-                mealWithRelations.functions = it
-            }
-
-            if (images.isNotEmpty()) {
-                mealWithRelations.images = images as MutableList<Image>
-            }
-
-            if (resources.isNotEmpty()) {
-                mealWithRelations.resources = resources as MutableList<Resource>
-            }
-
-            mealWithRelations
-
+        functions?.let {
+            mealWithRelations.functions = it
         }
+
+        if (images.isNotEmpty()) {
+            mealWithRelations.images = images as MutableList<Image>
+        }
+
+        if (resources.isNotEmpty()) {
+            mealWithRelations.resources = resources as MutableList<Resource>
+        }
+
+        return mealWithRelations
     }
 
     //Delete meal
@@ -165,23 +115,20 @@ class Repository private constructor(application: Application): RepositoryInterf
         functions: MealFunction?,
         images: List<Image>?
     ) {
-        withContext(Dispatchers.IO) {
+
             meal?.let {
-                roomDatabaseDAO.deleteMeal(meal)
+                roomDataManager.deleteMeal(meal)
                 firebaseDataManager.deleteMeal(meal)
 
             }
 
             functions?.let {
-                roomDatabaseDAO.deleteFunctions(it)
+                roomDataManager.deleteFunctions(it)
             }
 
             images?.let {
-                for (image in it) {
-                    roomDatabaseDAO.deleteImage(image)
-                }
+                roomDataManager.deleteImages(it)
             }
-        }
 
     }
 
@@ -200,7 +147,8 @@ class Repository private constructor(application: Application): RepositoryInterf
 
         fun getRepository(app:Application): Repository {
             return INSTANCE?: synchronized(this) {
-                Repository(app).also {
+                val roomDatabaseDAO: RoomDatabaseDAO = MealRoomDatabase.getInstance(app.applicationContext).databaseDAO
+                Repository(RoomDataManager(roomDatabaseDAO)).also {
                     INSTANCE = it
                 }
             }
