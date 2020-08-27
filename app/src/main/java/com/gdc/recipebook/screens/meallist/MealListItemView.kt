@@ -1,11 +1,7 @@
 package com.gdc.recipebook.screens.meallist
 
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModel
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.gdc.recipebook.database.dataclasses.MealWithFunctions
 import com.gdc.recipebook.databinding.ViewMealListItemBinding

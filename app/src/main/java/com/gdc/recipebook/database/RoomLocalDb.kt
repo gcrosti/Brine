@@ -9,20 +9,20 @@ import com.gdc.recipebook.database.interfaces.RoomDatabaseDAO
 
 
 @Database(entities = [Image::class, Meal::class,MealFunction::class,Resource::class],version = 5,exportSchema = false)
-abstract class MealRoomDatabase: RoomDatabase() {
+abstract class RoomLocalDb: RoomDatabase() {
     abstract val databaseDAO: RoomDatabaseDAO
 
     companion object {
         @Volatile
-        private var INSTANCE: MealRoomDatabase? = null
+        private var INSTANCE: com.gdc.recipebook.database.RoomLocalDb? = null
 
-        fun getInstance(context: Context): MealRoomDatabase {
+        fun getInstance(context: Context): com.gdc.recipebook.database.RoomLocalDb {
             synchronized(this) {
                 var instance = INSTANCE
                 if (instance == null) {
                     instance = Room.databaseBuilder(
                         context.applicationContext,
-                        MealRoomDatabase::class.java,
+                        RoomLocalDb::class.java,
                         "meal_database")
                         .fallbackToDestructiveMigration()
                         .build()

@@ -10,13 +10,10 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
-import com.bumptech.glide.Glide
 import com.gdc.recipebook.BrineApplication
 import com.gdc.recipebook.R
-import com.gdc.recipebook.database.MealRoomDatabase
 import com.gdc.recipebook.databinding.FragmentMealBinding
 import com.gdc.recipebook.screens.meal.images.ImageSliderAdapter
-import kotlinx.android.synthetic.main.fragment_meal.*
 
 
 class MealFragment: Fragment() {

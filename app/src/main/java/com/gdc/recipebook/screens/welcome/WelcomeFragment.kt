@@ -36,6 +36,8 @@ class WelcomeFragment: Fragment() {
         binding.welcomeViewModel = welcomeViewModel
         binding.lifecycleOwner = this
 
+        repository.updateMealsWithFunctions()
+
         repository.mealsWithFunctions.observe(viewLifecycleOwner, Observer {
             if (it != null) {
                 navToList()

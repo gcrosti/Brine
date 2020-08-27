@@ -1,8 +1,6 @@
 package com.gdc.recipebook.screens.meallist
 
-import android.app.Dialog
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,10 +10,8 @@ import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import com.gdc.recipebook.BrineApplication
 import com.gdc.recipebook.R
-import com.gdc.recipebook.database.Repository
 import com.gdc.recipebook.databinding.FragmentMealListBinding
 import com.gdc.recipebook.screens.modules.createDishDialog
-import kotlinx.android.synthetic.main.view_newmeal_dialog.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER

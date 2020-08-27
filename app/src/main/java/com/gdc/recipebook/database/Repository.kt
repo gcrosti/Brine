@@ -10,7 +10,7 @@ import java.util.*
 
 class Repository(
     private val roomDataManager: IRoomDataManager,
-    private val firebaseDataManager: FirebaseDataManager = FirebaseDataManager(),
+    private val firebaseDataManager: IFirebaseDataManager = FirebaseDataManager(),
     private val uiScope: CoroutineScope = CoroutineScope(Dispatchers.Main + Job())):
     RepositoryInterface {
 
@@ -19,11 +19,6 @@ class Repository(
     val mealsWithFunctions: LiveData<List<MealWithFunctions>?>
         get() = _mealsWithFunctions
 
-
-
-    init {
-        updateMealsWithFunctions()
-    }
 
     fun updateMealsWithFunctions() {
         uiScope.launch {
@@ -147,7 +142,7 @@ class Repository(
 
         fun getRepository(app:Application): Repository {
             return INSTANCE?: synchronized(this) {
-                val roomDatabaseDAO: RoomDatabaseDAO = MealRoomDatabase.getInstance(app.applicationContext).databaseDAO
+                val roomDatabaseDAO: RoomDatabaseDAO = RoomLocalDb.getInstance(app.applicationContext).databaseDAO
                 Repository(RoomDataManager(roomDatabaseDAO)).also {
                     INSTANCE = it
                 }
