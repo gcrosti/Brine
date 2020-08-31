@@ -15,6 +15,7 @@ import android.view.ViewGroup
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import com.gdc.recipebook.BrineApplication
@@ -30,6 +31,9 @@ import com.gdc.recipebook.screens.mealeditor.utils.EditorLifecycleObserver
 import com.gdc.recipebook.screens.mealeditor.utils.PhotoActivityResultContract
 import com.gdc.recipebook.screens.mealeditor.viewModel.MealEditorViewModel
 import com.gdc.recipebook.screens.mealeditor.viewModel.MealEditorViewModelFactory
+import io.noties.markwon.Markwon
+import io.noties.markwon.editor.MarkwonEditor
+import io.noties.markwon.editor.MarkwonEditorTextWatcher
 
 
 class MealEditorFragment: Fragment() {
@@ -83,6 +87,13 @@ class MealEditorFragment: Fragment() {
 
 
         //EDITABLE OBSERVERS
+        context?.let {
+            val markwon = Markwon.create(it)
+            val editor = MarkwonEditor.create(markwon)
+            binding.editNotes.addTextChangedListener(MarkwonEditorTextWatcher.withProcess(editor))
+        }
+
+
         binding.editName.addTextChangedListener(mealEditorViewModel.nameTextWatcher)
         binding.editNotes.addTextChangedListener(mealEditorViewModel.notesTextWatcher)
 
@@ -157,14 +168,20 @@ class MealEditorFragment: Fragment() {
     private fun navToList() {
         val action =
             MealEditorFragmentDirections.actionRecipeEditorFragmentToRecipeListFragment()
-        view?.findNavController()?.navigate(action)
+        val navController = view?.findNavController()
+        navController?.let {
+            it.navigate(action)
+        }
     }
 
     private fun navToMeal(name:String) {
         val action =
             MealEditorFragmentDirections.actionRecipeEditorFragmentToRecipeFragment()
         action.mealName = name
-        view?.findNavController()?.navigate(action)
+        val navController = view?.findNavController()
+        navController?.let {
+            it.navigate(action)
+        }
     }
 
 

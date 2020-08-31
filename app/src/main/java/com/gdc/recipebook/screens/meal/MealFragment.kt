@@ -14,6 +14,9 @@ import com.gdc.recipebook.BrineApplication
 import com.gdc.recipebook.R
 import com.gdc.recipebook.databinding.FragmentMealBinding
 import com.gdc.recipebook.screens.meal.images.ImageSliderAdapter
+import io.noties.markwon.Markwon
+import io.noties.markwon.PrecomputedTextSetterCompat
+import java.util.concurrent.Executors
 
 
 class MealFragment: Fragment() {
@@ -46,11 +49,20 @@ class MealFragment: Fragment() {
         //IMAGES
         mealViewModel.images.observe(viewLifecycleOwner, Observer { imageList ->
 
-                Log.d("imagelistsubmitted",imageList.toString())
                 val adapter = context?.let { ImageSliderAdapter(it,imageList) }
                 binding.imageViewPager.adapter = adapter
 
         })
+
+        mealViewModel.thisMeal.observe(viewLifecycleOwner, Observer {meal ->
+            context?.let {
+                val markwon = Markwon.builder(it)
+                    .textSetter(PrecomputedTextSetterCompat.create(Executors.newCachedThreadPool()))
+                    .build()
+                markwon.setMarkdown(binding.recipeNotes,meal.notes)
+            }
+        })
+
 
 
         //BIND ADAPTER
